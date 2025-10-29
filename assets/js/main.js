@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  if (document.querySelector('.main-banner')) {
   const swiper = new Swiper('.main-banner', {
     loop: true,
     autoplay: {
@@ -14,6 +15,7 @@ $(document).ready(function () {
     // Remove navigation
     // navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
   });
+}
 });
 
 $(document).ready(function() {
@@ -68,8 +70,10 @@ $(window).on("scroll", function () {
 });
 // Hide preloader when page fully loads
 window.addEventListener("load", function() {
-  document.getElementById("preloader").style.display = "none";
-  document.querySelector(".pagefully").style.display = "block";
+  const pre = document.getElementById("preloader");
+  const page = document.querySelector(".pagefully");
+  if (pre) pre.style.display = "none";
+  if (page) page.style.display = "block";
 });
 (function($) {
     "use strict";
@@ -154,6 +158,7 @@ window.addEventListener("load", function() {
        if ($('.single-select').length) {
         $('.single-select').niceSelect();
     }
+if (document.querySelector('.breadcrumb-swiper')) {
 const breadcrumbswiper = new Swiper('.breadcrumb-swiper', {
   loop: true,
   autoplay: {
@@ -171,8 +176,10 @@ const breadcrumbswiper = new Swiper('.breadcrumb-swiper', {
   },
   speed: 700   // transition between slides is faster (0.7s)
 });
+}
 
 
+  if (document.querySelector('.mySwiper')) {
   const swiper = new Swiper(".mySwiper", {
       slidesPerView: 1,
       spaceBetween: 20,
@@ -195,7 +202,9 @@ const breadcrumbswiper = new Swiper('.breadcrumb-swiper', {
         1200: { slidesPerView: 4 }
       }
     });
+}
     ///>> Hero Slider Start <<//
+    if (document.querySelector('.hero-slider')) {
     const sliderswiper = new Swiper('.hero-slider', {
         // Optional parameters
         speed: 1500,
@@ -235,10 +244,12 @@ const breadcrumbswiper = new Swiper('.breadcrumb-swiper', {
         },
 
     });
+}
 
 
     //>> Hero-3 Slider Start <<//
     const sliderActive3 = ".hero-slider-3";
+    if (document.querySelector(sliderActive3)) {
     const sliderInit3 = new Swiper(sliderActive3, {
         loop: true,
         slidesPerView: 1,
@@ -286,6 +297,7 @@ const breadcrumbswiper = new Swiper('.breadcrumb-swiper', {
         init.on("slideChange", animated);
     }
     animated_swiper(sliderActive3, sliderInit3);
+    }
 
 
     //>> Testimonial Slider Start <<//
@@ -854,36 +866,38 @@ if ($('.brand-slider').length > 0) {
         // }
     });
   
-      function loader() {
-        $windowOn.on('load', function() {
-            // Animate loader off screen
-            $(".preloader").addClass('loaded');
-            $(".preloader").delay(600).fadeOut();
-        });
-      }
-      
-      loader();
-    // Simple Captcha Generator
-  const num1 = Math.floor(Math.random() * 10) + 1;
-  const num2 = Math.floor(Math.random() * 10) + 1;
-  document.getElementById("captcha-question").textContent = `${num1} + ${num2} =`;
-
-  document.getElementById("enquiryForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const answer = parseInt(document.getElementById("captcha-answer").value);
-    
-    if (answer === num1 + num2) {
-      alert("Form submitted successfully!");
-      this.reset();
-      // Redirect to Thank You page after alert
-      setTimeout(() => {
-        window.location.href = "thankyou.html";
-      }, 500); // small delay (0.5 sec)
-    } else {
-      alert("Incorrect Captcha. Please try again.");
+    function loader() {
+      $windowOn.on('load', function() {
+          // Animate loader off screen (guarded)
+          const $pre = $(".preloader");
+          if ($pre.length) {
+            $pre.addClass('loaded').delay(600).fadeOut();
+          }
+      });
     }
-  });
+    
+    loader();
   
-  })(jQuery); // End jQuery
+    // Simple Captcha Generator (guarded)
+    const cq = document.getElementById("captcha-question");
+    const form = document.getElementById("enquiryForm");
+    if (cq && form) {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      cq.textContent = `${num1} + ${num2} =`;
 
-
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const ansEl = document.getElementById("captcha-answer");
+        const answer = parseInt(ansEl && ansEl.value, 10);
+        if (answer === num1 + num2) {
+          alert("Form submitted successfully!");
+          this.reset();
+          setTimeout(() => { window.location.href = "thankyou.html"; }, 500);
+        } else {
+          alert("Incorrect Captcha. Please try again.");
+        }
+      });
+    }
+  
+  })(jQuery); // End jQuery

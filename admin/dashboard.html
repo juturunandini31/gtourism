@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | G-Tourism</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/animate.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    body { background: #f6fbff; }
+    .admin-shell{ display:flex; min-height:100vh; }
+    .sidebar{ width:300px; background: linear-gradient(180deg,var(--theme-2) 0%, #0a1220 100%); color:#e7f1ff; display:flex; flex-direction:column; }
+    .sidebar .brand{ padding:16px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; gap:12px; align-items:center; }
+    .sidebar .brand img{ height:44px; border-radius:10px; }
+    .sidebar nav{ padding:12px; display:flex; flex-direction:column; gap:8px; }
+    .nav-link{ color:#d2e6ff; border-radius:12px; display:flex; align-items:center; gap:10px; padding:12px 14px; transition:.2s ease; }
+    .nav-link i{ width:18px; text-align:center; }
+    .nav-link:hover{ background: rgba(125,34,255,.18); color:#fff; }
+    .nav-link.active{ background: var(--theme); color:#fff; box-shadow:0 10px 24px rgba(125,34,255,.35); }
+    .spacer{ flex:1; }
+    .signout{ border-top:1px solid rgba(255,255,255,0.06); padding:12px; }
+
+    .content{ flex:1; display:flex; flex-direction:column; }
+    .topbar{ background:#ffffff; border-bottom:1px solid #e9f1f6; padding:12px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:2; }
+    .page{ padding:24px; max-width:1200px; }
+
+    .card{ border:1px solid #e7f0f6; border-radius:18px; box-shadow:0 14px 36px rgba(32,0,132,0.08); overflow:hidden; }
+    .card-header{ background:#fff; border-bottom:1px solid #eef4f8; }
+    .theme-btn{ background: var(--theme); color:#fff; border:none; padding:10px 14px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; }
+    .theme-btn:hover{ opacity:.95; color:#fff; }
+    .btn-outline-danger{ border-radius:8px; }
+    .form-control{ height:48px; border-radius:12px; border:1px solid #d7e3ec; }
+    .form-control:focus{ border-color: var(--theme); box-shadow:0 0 0 0.2rem rgba(125,34,255,.20); }
+
+    .list-group-item{ display:flex; align-items:center; justify-content:space-between; }
+    .bg-hero{ background: url('../assets/img/3.jpg') center/cover no-repeat; position:relative; border-radius:16px; overflow:hidden; }
+    .bg-hero::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg, rgba(32,0,132,0.78) 0%, rgba(125,34,255,0.52) 100%); }
+    .bg-hero .inner{ position:relative; z-index:1; padding:26px; color:#fff; }
+    .bg-hero h4{ letter-spacing:.2px; }
+    
+    /* Activities/Facts Box Styles */
+    .activities-box-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .activities-box-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 100%;
+    }
+    
+    .activities-box-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      flex: 1 1 calc(50% - 20px);
+      min-width: 250px;
+    }
+    
+    .activities-box-item .icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(125,34,255,0.1);
+      border-radius: 10px;
+    }
+    
+    .activities-box-item .icon img {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .activities-box-item .content span {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    
+    .activities-box-item .content h6 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    /* Tour Plan Styles */
+    .tour-plan-item {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .tour-plan-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .tour-plan-day {
+      font-weight: 600;
+      color: var(--theme);
+      font-size: 18px;
+    }
+    
+    .tour-plan-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    /* Contact Form Styles */
+    .phone-input-group {
+      display: flex;
+    }
+    
+    .country-code {
+      width: 100px;
+      border-radius: 10px 0 0 10px;
+      border-right: none;
+      background-color: #f8f9fa;
+    }
+    
+    .phone-number {
+      border-radius: 0 10px 10px 0;
+      flex: 1;
+    }
+    
+    .captcha-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    
+    .captcha-text {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 5px;
+      background: linear-gradient(45deg, var(--theme), var(--theme-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 15px;
+      padding: 5px 10px;
+      border: 1px dashed #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Contact Info Styles */
+    .contact-info {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      height: 100%;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 25px;
+    }
+    
+    .contact-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(125, 34, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    
+    .contact-icon i {
+      color: var(--theme);
+      font-size: 20px;
+    }
+    
+    .contact-details h5 {
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .contact-details p {
+      margin: 0;
+      color: #666;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .social-link {
+      width: 40px;
+      height: 40px;
+      background: rgba(125, 34, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--theme);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    
+    .social-link:hover {
+      background: var(--theme);
+      color: white;
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="../assets/img/G Tourism.jpg" alt="logo" loading="lazy">
+        <div>
+          <div class="fw-bold">G-Tourism</div>
+          <small>Admin</small>
+        </div>
+      </div>
+      <nav>
+        <a class="nav-link active" href="#ge" data-target="ge"><i class="fa-solid fa-plane"></i> Global Escapes</a>
+        <a class="nav-link" href="#ii" data-target="ii"><i class="fa-solid fa-umbrella-beach"></i> Incredible India</a>
+        <a class="nav-link" href="#pyj" data-target="pyj"><i class="fa-solid fa-route"></i> Plan Your Journey</a>
+        <a class="nav-link" href="#trip" data-target="trip"><i class="fa-regular fa-pen-to-square"></i> Trip Details Editor</a>
+        <a class="nav-link" href="#contact" data-target="contact"><i class="fa-regular fa-envelope"></i> Contact Form</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="signout">
+        <button id="signoutBtn" class="theme-btn w-100"><i class="fa-regular fa-right-from-bracket"></i> Sign out</button>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <div class="topbar">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fa-regular fa-gauge"></i>
+          <span class="fw-semibold">Dashboard</span>
+        </div>
+        <a href="../index.html" class="text-decoration-none">View site</a>
+      </div>
+
+      <div id="storageWarning" class="alert alert-warning m-3 d-none" role="alert" style="border-radius:12px">
+        You're viewing this site via file://. Data saved in Admin may not appear in other pages after refresh because each file has its own storage. Please run the site on http:// (any local server) so data persists across pages.
+      </div>
+
+      <div class="page">
+        <!-- Hero / context -->
+        <div class="bg-hero mb-4">
+          <div class="inner">
+            <h4 class="mb-1">Welcome back</h4>
+            <p class="mb-0">Manage content for Global Escapes, Incredible India and Plan Your Journey.</p>
+          </div>
+        </div>
+
+        <!-- Panels -->
+        <section id="panel-ge" class="panel">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Global Escapes</h5>
+              <small class="text-muted">Add or remove categories</small>
+            </div>
+            <div class="card-body">
+              <form id="form-ge" class="row g-2 mb-3">
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="ge-title" placeholder="Category name (e.g., Europe)">
+                </div>
+                <div class="col-md-5">
+                  <input type="url" class="form-control" id="ge-image" placeholder="Image URL (or use picker)">
+                </div>
+                <div class="col-md-2">
+                  <input type="file" accept="image/*" class="form-control" id="ge-file">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="ge-days" placeholder="Days (e.g., 5 Days)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="ge-people" placeholder="People (e.g., 20+)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="ge-price" placeholder="Price (e.g., ₹55,000)">
+                </div>
+                <div class="col-12">
+                  <textarea class="form-control" id="ge-desc1" rows="2" placeholder="Description 1 (optional)"></textarea>
+                </div>
+                <div class="col-12">
+                  <textarea class="form-control" id="ge-desc2" rows="2" placeholder="Description 2 (optional)"></textarea>
+                </div>
+                <div class="col-12">
+                  <img id="ge-preview" alt="Preview" style="max-height:120px;border-radius:10px;display:none">
+                </div>
+                <div class="col-12">
+                  <button class="theme-btn" id="ge-submit" type="submit"><i class="fa-regular fa-plus"></i> Add Category</button>
+                </div>
+              </form>
+              <ul id="list-ge" class="list-group"></ul>
+              <!-- Inline Details Editor -->
+              <div id="ge-details-inline" class="card mt-3 d-none">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Global Escapes Details</h6>
+                  <small id="gei-current" class="text-muted"></small>
+                </div>
+                <div class="card-body">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                      <label class="form-label small">Title override</label>
+                      <input type="text" id="gei-title" class="form-control" placeholder="Title on details page">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small">Hero Image URL</label>
+                      <input type="url" id="gei-image" class="form-control" placeholder="https://... or base64">
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label small">Choose File</label>
+                      <input type="file" id="gei-file" class="form-control" accept="image/*">
+                    </div>
+                    <div class="col-12">
+                      <img id="gei-preview" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:none">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label small">Description 1</label>
+                      <textarea id="gei-desc1" rows="2" class="form-control" placeholder="Short intro"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label small">Description 2</label>
+                      <textarea id="gei-desc2" rows="2" class="form-control" placeholder="Additional info"></textarea>
+                    </div>
+                  </div>
+
+                  <hr>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Facts</h6>
+                    <small class="text-muted">These show as the icon boxes on the details page</small>
+                  </div>
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                      <input type="text" id="gei-fact-label" class="form-control" placeholder="Label (e.g., Arrival City)">
+                    </div>
+                    <div class="col-md-4">
+                      <input type="text" id="gei-fact-value" class="form-control" placeholder="Value (e.g., Bangkok)">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="url" id="gei-fact-iconurl" class="form-control" placeholder="Icon URL (e.g., assets/img/icon/27.svg)">
+                    </div>
+                    <div class="col-md-1">
+                      <input type="file" id="gei-fact-iconfile" class="form-control" accept="image/*">
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <button class="btn btn-outline-primary w-100" type="button" id="gei-fact-add"><i class="fa-regular fa-plus"></i></button>
+                    </div>
+                    <div class="col-12">
+                      <ul id="gei-facts-list" class="list-group"></ul>
+                    </div>
+                    <div class="col-12">
+                      <div id="gei-activities-preview" class="activities-box-wrap mt-2">
+                        <div class="activities-box-area" id="gei-activities-row1"></div>
+                        <div class="activities-box-area mb-0" id="gei-activities-row2"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Tour Plan</h6>
+                    <small class="text-muted">Add day-wise plan with text and optional image</small>
+                  </div>
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                      <input type="text" id="gei-tp-title" class="form-control" placeholder="Day title (e.g., Day 1: Arrival)">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="url" id="gei-tp-image" class="form-control" placeholder="Image URL (optional)">
+                    </div>
+                    <div class="col-md-9">
+                      <textarea id="gei-tp-body" rows="3" class="form-control" placeholder="Description"></textarea>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="file" id="gei-tp-file" class="form-control" accept="image/*">
+                      <img id="gei-tp-preview" style="max-height:120px;border-radius:10px;display:none;margin-top:6px">
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-outline-primary" id="gei-tp-add" type="button"><i class="fa-regular fa-plus"></i> Add Day</button>
+                    </div>
+                    <div class="col-12">
+                      <ul id="gei-tp-list" class="list-group"></ul>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button class="btn btn-outline-secondary" id="gei-cancel" type="button">Close</button>
+                    <button class="btn btn-primary" id="gei-save" type="button"><i class="fa-regular fa-floppy-disk"></i> Save Details</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Backup & Restore -->
+        <section id="panel-backup" class="panel">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Backup & Restore</h5>
+              <small class="text-muted">Move data across browsers/ports</small>
+            </div>
+            <div class="card-body d-flex flex-wrap gap-2">
+              <button id="btn-export" class="btn btn-outline-primary"><i class="fa-regular fa-download"></i> Export Admin Data</button>
+              <label class="btn btn-outline-secondary mb-0">
+                <i class="fa-regular fa-upload"></i> Import Admin Data
+                <input id="file-import" type="file" accept="application/json" hidden>
+              </label>
+              <small class="text-muted">Exports Global Escapes, Incredible India, Plan Your Journey, and all Trip overrides.</small>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-ii" class="panel d-none">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Incredible India</h5>
+              <small class="text-muted">Add or remove categories</small>
+            </div>
+            <div class="card-body">
+              <form id="form-ii" class="row g-2 mb-3">
+                <div class="col-md-5">
+                  <input type="text" class="form-control" id="ii-title" placeholder="Category name (e.g., Kerala)">
+                </div>
+                <div class="col-md-5">
+                  <input type="url" class="form-control" id="ii-image" placeholder="Image URL (or use picker)">
+                </div>
+                <div class="col-md-2">
+                  <input type="file" accept="image/*" class="form-control" id="ii-file">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="ii-days" placeholder="Days (e.g., 5 Days)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="ii-people" placeholder="People (e.g., 20+)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="ii-price" placeholder="Price (e.g., ₹55,000)">
+                </div>
+                <div class="col-12">
+                  <textarea class="form-control" id="ii-desc1" rows="2" placeholder="Description 1 (optional)"></textarea>
+                </div>
+                <div class="col-12">
+                  <textarea class="form-control" id="ii-desc2" rows="2" placeholder="Description 2 (optional)"></textarea>
+                </div>
+                <div class="col-12">
+                  <img id="ii-preview" alt="Preview" style="width:140px;aspect-ratio:37/26;object-fit:cover;border-radius:12px;display:none">
+                </div>
+                <div class="col-12">
+                  <button class="theme-btn" id="ii-submit" type="submit"><i class="fa-regular fa-plus"></i> Add Category</button>
+                </div>
+              </form>
+              <ul id="list-ii" class="list-group"></ul>
+              <!-- Inline Details Editor for Incredible India -->
+              <div id="ii-details-inline" class="card mt-3 d-none">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Incredible India Details</h6>
+                  <small id="iii-current" class="text-muted"></small>
+                </div>
+                <div class="card-body">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                      <label class="form-label small">Title override</label>
+                      <input type="text" id="iii-title" class="form-control" placeholder="Title on details page">
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label small">Hero Image URL</label>
+                      <input type="url" id="iii-image" class="form-control" placeholder="https://... or base64">
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label small">Choose File</label>
+                      <input type="file" id="iii-file" class="form-control" accept="image/*">
+                    </div>
+                    <div class="col-12">
+                      <img id="iii-preview" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:none">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label small">Description 1</label>
+                      <textarea id="iii-desc1" rows="2" class="form-control" placeholder="Short intro"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label small">Description 2</label>
+                      <textarea id="iii-desc2" rows="2" class="form-control" placeholder="Additional info"></textarea>
+                    </div>
+                  </div>
+
+                  <hr>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Facts</h6>
+                    <small class="text-muted">Admin fills only values. Names & icons are fixed.</small>
+                  </div>
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                      <label class="form-label small">Accommodation</label>
+                      <textarea id="ii-fv-accommodation" class="form-control" rows="2" placeholder="e.g., 4★ / 5★ Hotels & Resorts"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Entry Fee</label>
+                      <textarea id="ii-fv-entry" class="form-control" rows="2" placeholder="e.g., Included (As Per Itinerary)"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Arrival City</label>
+                      <textarea id="ii-fv-arrival" class="form-control" rows="2" placeholder="e.g., Delhi"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Language</label>
+                      <textarea id="ii-fv-language" class="form-control" rows="2" placeholder="e.g., English / Hindi"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Airport Transfers</label>
+                      <textarea id="ii-fv-transfers" class="form-control" rows="2" placeholder="e.g., Included"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Local Tour</label>
+                      <textarea id="ii-fv-local" class="form-control" rows="2" placeholder="e.g., City Tour / Temple Visit"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Guide</label>
+                      <textarea id="ii-fv-guide" class="form-control" rows="2" placeholder="e.g., English-Speaking Local Expert"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Recommended Age</label>
+                      <textarea id="ii-fv-age" class="form-control" rows="2" placeholder="e.g., All Ages"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <div class="activities-box-wrap mt-2">
+                        <div class="activities-box-area" id="ii-activities-row1"></div>
+                        <div class="activities-box-area mb-0" id="ii-activities-row2"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Tour Plan</h6>
+                    <small class="text-muted">Add day-wise plan with text and optional image</small>
+                  </div>
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                      <input type="text" id="ii-tp-title" class="form-control" placeholder="Day title (e.g., Day 1: Arrival)">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="url" id="ii-tp-image" class="form-control" placeholder="Image URL (optional)">
+                    </div>
+                    <div class="col-md-9">
+                      <textarea id="ii-tp-body" rows="3" class="form-control" placeholder="Description"></textarea>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="file" id="ii-tp-file" class="form-control" accept="image/*">
+                      <img id="ii-tp-preview" style="max-height:120px;border-radius:10px;display:none;margin-top:6px">
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-outline-primary" id="ii-tp-add" type="button"><i class="fa-regular fa-plus"></i> Add Day</button>
+                    </div>
+                    <div class="col-12">
+                      <ul id="ii-tp-list" class="list-group"></ul>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button class="btn btn-outline-secondary" id="iii-cancel" type="button">Close</button>
+                    <button class="btn btn-primary" id="iii-save" type="button"><i class="fa-regular fa-floppy-disk"></i> Save Details</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-pyj" class="panel d-none">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Plan Your Journey</h5>
+              <small class="text-muted">Add or remove places</small>
+            </div>
+            <div class="card-body">
+              <form id="form-pyj" class="row g-2 mb-3">
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="pyj-location" placeholder="Location (e.g., Kerala)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="pyj-title" placeholder="Title (e.g., Munnar / Thekkady)">
+                </div>
+                <div class="col-md-3">
+                  <input type="url" class="form-control" id="pyj-image" placeholder="Image URL (or picker)">
+                </div>
+                <div class="col-md-1">
+                  <input type="file" accept="image/*" class="form-control" id="pyj-file">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="pyj-days" placeholder="Days (e.g., 4 Nights 5 Days)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="pyj-people" placeholder="People (e.g., 20+)">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="pyj-price" placeholder="Price (e.g., ₹39,999)">
+                </div>
+                <div class="col-12">
+                  <img id="pyj-preview" alt="Preview" style="max-height:120px;border-radius:10px;display:none">
+                </div>
+                <div class="col-12">
+                  <button class="theme-btn" type="submit"><i class="fa-regular fa-plus"></i> Add Place</button>
+                </div>
+              </form>
+              <ul id="list-pyj" class="list-group"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="panel-trip" class="panel d-none">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Trip Details Editor</h5>
+              <small class="text-muted">Edit content for destination-details.html by slug</small>
+            </div>
+            <div class="card-body">
+              <form id="form-trip" class="row g-2 mb-3">
+                <div class="col-md-4">
+                  <input type="text" class="form-control" id="trip-slug" placeholder="Slug (e.g., bangkok-phuket-5-nights-6-days)">
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" id="trip-title" placeholder="Title shown on details page">
+                </div>
+                <div class="col-md-9">
+                  <input type="url" class="form-control" id="trip-image" placeholder="Hero Image URL (or use picker)">
+                </div>
+                <div class="col-md-3">
+                  <input type="file" accept="image/*" class="form-control" id="trip-file">
+                </div>
+                <div class="col-12">
+                  <img id="trip-preview" alt="Preview" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px;display:none">
+                </div>
+                <div class="col-12">
+                  <textarea class="form-control" id="trip-desc1" rows="3" placeholder="Description 1"></textarea>
+                </div>
+                <div class="col-12">
+                  <textarea class="form-control" id="trip-desc2" rows="3" placeholder="Description 2"></textarea>
+                </div>
+                <div class="col-12">
+                  <hr>
+                  <h6 class="mb-2">Facts</h6>
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                      <input type="text" class="form-control" id="fact-label" placeholder="Label (e.g., Arrival City)">
+                    </div>
+                    <div class="col-md-5">
+                      <input type="text" class="form-control" id="fact-value" placeholder="Value (e.g., Bangkok)">
+                    </div>
+                    <div class="col-md-2">
+                      <button class="btn btn-outline-primary w-100" type="button" id="fact-add"><i class="fa-regular fa-plus"></i> Add</button>
+                    </div>
+                    <div class="col-12">
+                      <ul id="facts-list" class="list-group"></ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <hr>
+                  <h6 class="mb-2">Tour Plan</h6>
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" id="tp-title" placeholder="Day title (e.g., Day 1: Arrival)">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="url" class="form-control" id="tp-image" placeholder="Image URL (optional)">
+                    </div>
+                    <div class="col-md-9">
+                      <textarea class="form-control" id="tp-body" rows="3" placeholder="Description"></textarea>
+                    </div>
+                    <div class="col-md-3">
+                      <input type="file" accept="image/*" class="form-control" id="tp-file">
+                      <img id="tp-preview" alt="Preview" style="max-height:120px;border-radius:10px;display:none;margin-top:6px">
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-outline-primary" id="tp-add" type="button"><i class="fa-regular fa-plus"></i> Add Day</button>
+                    </div>
+                    <div class="col-12">
+                      <ul id="tp-list" class="list-group"></ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 d-flex gap-2">
+                  <button class="theme-btn" type="submit"><i class="fa-regular fa-floppy-disk"></i> Save / Update</button>
+                  <a id="trip-view-link" class="btn btn-outline-secondary" target="_blank" href="#">View on site</a>
+                </div>
+              </form>
+              <ul id="list-trip" class="list-group"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contact Form Panel -->
+        <section id="panel-contact" class="panel d-none">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Contact Form</h5>
+              <small class="text-muted">Test the enquiry form functionality</small>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <!-- Contact Information -->
+                <div class="col-lg-4 mb-4">
+                  <div class="contact-info">
+                    <h4>Contact Information</h4>
+                    
+                    <div class="contact-item">
+                      <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                      </div>
+                      <div class="contact-details">
+                        <h5>Phone Number</h5>
+                        <p>+91 99959 50900</p>
+                      </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                      <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                      </div>
+                      <div class="contact-details">
+                        <h5>Email Address</h5>
+                        <p>info@gtourism.in</p>
+                      </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                      <div class="contact-icon">
+                        <i class="fab fa-whatsapp"></i>
+                      </div>
+                      <div class="contact-details">
+                        <h5>WhatsApp</h5>
+                        <p>+91 99959 50900</p>
+                      </div>
+                    </div>
+                    
+                    <div class="social-links">
+                      <a href="#" class="social-link">
+                        <i class="fab fa-facebook-f"></i>
+                      </a>
+                      <a href="#" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                      </a>
+                      <a href="#" class="social-link">
+                        <i class="fab fa-twitter"></i>
+                      </a>
+                      <a href="#" class="social-link">
+                        <i class="fab fa-linkedin-in"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Enquiry Form -->
+                <div class="col-lg-8">
+                  <div class="enquiry-form">
+                    <h4>Enquiry Form</h4>
+                    
+                    <form id="enquiryForm">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="text" class="form-control" id="name" placeholder="Name *" required>
+                        </div>
+                        <div class="col-md-6">
+                          <input type="text" class="form-control" id="city" placeholder="City of Residence *" required>
+                        </div>
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="email" class="form-control" id="email" placeholder="Email *" required>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="phone-input-group">
+                            <div class="form-control country-code">🇮🇳 +91</div>
+                            <input type="tel" class="form-control phone-number" id="phone" placeholder="Phone Number *" required>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="text" class="form-control" id="whatsapp" placeholder="WhatsApp">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="text" class="form-control" id="destination" placeholder="Travel Destination *" required>
+                        </div>
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-md-6">
+                          <input type="date" class="form-control" id="travelDate" placeholder="dd-mm-yyyy">
+                        </div>
+                        <div class="col-md-6">
+                          <input type="number" class="form-control" id="people" placeholder="No. of People *" min="1" required>
+                        </div>
+                      </div>
+                      
+                      <select class="form-select" id="vacationType" required>
+                        <option value="" disabled selected>Vacation Type *</option>
+                        <option value="Family Vacation">Family Vacation</option>
+                        <option value="Honeymoon">Honeymoon</option>
+                        <option value="Adventure Trip">Adventure Trip</option>
+                        <option value="Business Trip">Business Trip</option>
+                        <option value="Group Tour">Group Tour</option>
+                        <option value="Solo Travel">Solo Travel</option>
+                        <option value="Couple Trip">Couple Trip</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      
+                      <div class="captcha-container">
+                        <div class="captcha-text" id="captchaText">A3B8</div>
+                        <input type="text" class="form-control" id="captchaInput" placeholder="Enter Answer *" required>
+                      </div>
+                      
+                      <button type="submit" class="btn-submit theme-btn w-100" id="submitBtn">
+                        <i class="fas fa-paper-plane me-2"></i> SUBMIT
+                      </button>
+                      
+                      <div id="formAlert" class="alert d-none mt-3"></div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Global Escapes: Details Modal (Title/Image/Descriptions + Facts + Tour Plan) -->
+  <div class="modal fade" id="geDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Global Escapes – Edit Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="ge-det-form" class="row g-2">
+            <div class="col-md-6"><input type="text" class="form-control" id="ge-det-title" placeholder="Title override"></div>
+            <div class="col-md-4"><input type="url" class="form-control" id="ge-det-image" placeholder="Hero Image URL"></div>
+            <div class="col-md-2"><input type="file" class="form-control" id="ge-det-file" accept="image/*"></div>
+            <div class="col-12"><img id="ge-det-preview" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:none"></div>
+            <div class="col-12"><textarea id="ge-det-desc1" class="form-control" rows="2" placeholder="Description 1"></textarea></div>
+            <div class="col-12"><textarea id="ge-det-desc2" class="form-control" rows="2" placeholder="Description 2"></textarea></div>
+            <div class="col-12"><hr><h6>Facts</h6><small class="text-muted">Admin fills only values. Names & icons are fixed.</small></div>
+            <div class="col-md-6"><label class="form-label small">Accommodation</label><textarea id="ge-fv-accommodation" class="form-control" rows="2" placeholder="e.g., 4★ / 5★ Hotels & Resorts"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Entry Fee</label><textarea id="ge-fv-entry" class="form-control" rows="2" placeholder="e.g., Included (As Per Itinerary)"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Arrival City</label><textarea id="ge-fv-arrival" class="form-control" rows="2" placeholder="e.g., Bangkok"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Language</label><textarea id="ge-fv-language" class="form-control" rows="2" placeholder="e.g., English / Thai"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Airport Transfers</label><textarea id="ge-fv-transfers" class="form-control" rows="2" placeholder="e.g., Included"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Island Tour</label><textarea id="ge-fv-island" class="form-control" rows="2" placeholder="e.g., Phi Phi / James Bond Island"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Guide</label><textarea id="ge-fv-guide" class="form-control" rows="2" placeholder="e.g., English-Speaking Local Expert"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Recommended Age</label><textarea id="ge-fv-age" class="form-control" rows="2" placeholder="e.g., All Ages"></textarea></div>
+            <div class="col-12">
+              <div class="activities-box-wrap mt-2">
+                <div class="activities-box-area" id="ge-activities-row1"></div>
+                <div class="activities-box-area mb-0" id="ge-activities-row2"></div>
+              </div>
+            </div>
+            <div class="col-12"><hr><h6>Tour Plan</h6></div>
+            <div class="col-md-6"><input type="text" id="ge-tp-title" class="form-control" placeholder="Day title (e.g., Day 1: Arrival)"></div>
+            <div class="col-md-6"><input type="url" id="ge-tp-image" class="form-control" placeholder="Image URL (optional)"></div>
+            <div class="col-12"><textarea id="ge-tp-body" class="form-control" rows="3" placeholder="Description"></textarea></div>
+            <div class="col-md-3"><input type="file" id="ge-tp-file" class="form-control" accept="image/*"><img id="ge-tp-preview" style="max-height:120px;border-radius:10px;display:none;margin-top:6px"></div>
+            <div class="col-12"><button class="btn btn-outline-primary" id="ge-tp-add" type="button"><i class="fa-regular fa-plus"></i> Add Day</button></div>
+            <div class="col-12"><ul id="ge-tp-list" class="list-group"></ul></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+          <button class="btn btn-primary" id="ge-det-save" type="button"><i class="fa-regular fa-floppy-disk"></i> Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incredible India: Details Modal (Title/Image/Descriptions + Facts + Tour Plan) -->
+  <div class="modal fade" id="iiDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Incredible India – Edit Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="ii-det-form" class="row g-2">
+            <div class="col-md-6"><input type="text" class="form-control" id="ii-det-title" placeholder="Title override"></div>
+            <div class="col-md-4"><input type="url" class="form-control" id="ii-det-image" placeholder="Hero Image URL"></div>
+            <div class="col-md-2"><input type="file" class="form-control" id="ii-det-file" accept="image/*"></div>
+            <div class="col-12"><img id="ii-det-preview" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:none"></div>
+            <div class="col-12"><textarea id="ii-det-desc1" class="form-control" rows="2" placeholder="Description 1"></textarea></div>
+            <div class="col-12"><textarea id="ii-det-desc2" class="form-control" rows="2" placeholder="Description 2"></textarea></div>
+            <div class="col-12"><hr><h6>Facts</h6><small class="text-muted">Admin fills only values. Names & icons are fixed.</small></div>
+            <div class="col-md-6"><label class="form-label small">Accommodation</label><textarea id="ii-fv-accommodation" class="form-control" rows="2" placeholder="e.g., 4★ / 5★ Hotels & Resorts"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Entry Fee</label><textarea id="ii-fv-entry" class="form-control" rows="2" placeholder="e.g., Included (As Per Itinerary)"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Arrival City</label><textarea id="ii-fv-arrival" class="form-control" rows="2" placeholder="e.g., Delhi"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Language</label><textarea id="ii-fv-language" class="form-control" rows="2" placeholder="e.g., English / Hindi"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Airport Transfers</label><textarea id="ii-fv-transfers" class="form-control" rows="2" placeholder="e.g., Included"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Local Tour</label><textarea id="ii-fv-local" class="form-control" rows="2" placeholder="e.g., City Tour / Temple Visit"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Guide</label><textarea id="ii-fv-guide" class="form-control" rows="2" placeholder="e.g., English-Speaking Local Expert"></textarea></div>
+            <div class="col-md-6"><label class="form-label small">Recommended Age</label><textarea id="ii-fv-age" class="form-control" rows="2" placeholder="e.g., All Ages"></textarea></div>
+            <div class="col-12">
+              <div class="activities-box-wrap mt-2">
+                <div class="activities-box-area" id="ii-activities-row1-modal"></div>
+                <div class="activities-box-area mb-0" id="ii-activities-row2-modal"></div>
+              </div>
+            </div>
+            <div class="col-12"><hr><h6>Tour Plan</h6></div>
+            <div class="col-md-6"><input type="text" id="ii-tp-title" class="form-control" placeholder="Day title (e.g., Day 1: Arrival)"></div>
+            <div class="col-md-6"><input type="url" id="ii-tp-image" class="form-control" placeholder="Image URL (optional)"></div>
+            <div class="col-12"><textarea id="ii-tp-body" class="form-control" rows="3" placeholder="Description"></textarea></div>
+            <div class="col-md-3"><input type="file" id="ii-tp-file" class="form-control" accept="image/*"><img id="ii-tp-preview" style="max-height:120px;border-radius:10px;display:none;margin-top:6px"></div>
+            <div class="col-12"><button class="btn btn-outline-primary" id="ii-tp-add" type="button"><i class="fa-regular fa-plus"></i> Add Day</button></div>
+            <div class="col-12"><ul id="ii-tp-list" class="list-group"></ul></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+          <button class="btn btn-primary" id="ii-det-save" type="button"><i class="fa-regular fa-floppy-disk"></i> Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="../assets/js/jquery-3.7.1.min.js"></script>
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/wow.min.js"></script>
+  <script>
+    // Auth guard
+    if (localStorage.getItem('gt_admin_auth') !== 'true') {
+      window.location.href = './login.html';
+    }
+
+    new WOW().init();
+
+    // Sidebar switching
+    const links = document.querySelectorAll('.nav-link');
+    const panels = {
+      ge: document.getElementById('panel-ge'),
+      ii: document.getElementById('panel-ii'),
+      pyj: document.getElementById('panel-pyj'),
+      trip: document.getElementById('panel-trip'),
+      contact: document.getElementById('panel-contact')
+    };
+    links.forEach(l => l.addEventListener('click', (e) => {
+      e.preventDefault();
+      links.forEach(x => x.classList.remove('active'));
+      l.classList.add('active');
+      const tgt = l.getAttribute('data-target');
+      Object.values(panels).forEach(p => p.classList.add('d-none'));
+      panels[tgt].classList.remove('d-none');
+    }));
+
+    // Contact Form JavaScript
+    // Generate CAPTCHA function
+    function generateCaptcha() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let captcha = '';
+      for (let i = 0; i < 4; i++) {
+        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById('captchaText').textContent = captcha;
+      return captcha;
+    }
+    
+    // Initialize CAPTCHA when page loads
+    let currentCaptcha = generateCaptcha();
+    
+    // Contact Form submission handler
+    document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const alertDiv = document.getElementById('formAlert');
+      
+      // Validate CAPTCHA
+      const userCaptcha = document.getElementById('captchaInput').value;
+      if (userCaptcha.toUpperCase() !== currentCaptcha.toUpperCase()) {
+        alertDiv.className = 'alert alert-danger';
+        alertDiv.textContent = 'Invalid CAPTCHA. Please try again.';
+        alertDiv.classList.remove('d-none');
+        currentCaptcha = generateCaptcha();
+        return;
+      }
+      
+      // Get all form data
+      const formData = {
+        name: document.getElementById('name').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        whatsapp: document.getElementById('whatsapp').value.trim() || 'Not provided',
+        destination: document.getElementById('destination').value.trim(),
+        travelDate: document.getElementById('travelDate').value || 'Not specified',
+        people: document.getElementById('people').value,
+        vacationType: document.getElementById('vacationType').value
+      };
+      
+      // Validate required fields
+      if (!formData.name || !formData.city || !formData.email || !formData.phone || !formData.destination || !formData.people || !formData.vacationType) {
+        alertDiv.className = 'alert alert-danger';
+        alertDiv.textContent = 'Please fill all required fields.';
+        alertDiv.classList.remove('d-none');
+        return;
+      }
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> SENDING...';
+      
+      // Send email using mailto
+      const emailSent = sendEmail(formData);
+      
+      if (emailSent) {
+        alertDiv.className = 'alert alert-success';
+        alertDiv.innerHTML = `
+          <h5><i class="fas fa-check-circle me-2"></i>Success!</h5>
+          <p class="mb-0">Your enquiry has been submitted successfully. We will contact you soon.</p>
+          <small class="text-muted">Your email client should open with a pre-filled message. Please click send to complete the process.</small>
+        `;
+        alertDiv.classList.remove('d-none');
+        
+        // Reset form after successful submission
+        setTimeout(() => {
+          document.getElementById('enquiryForm').reset();
+          currentCaptcha = generateCaptcha();
+        }, 2000);
+      } else {
+        alertDiv.className = 'alert alert-warning';
+        alertDiv.innerHTML = `
+          <h5><i class="fas fa-exclamation-triangle me-2"></i>Check Your Email Client</h5>
+          <p class="mb-0">Your enquiry is ready to be sent. Please check if your email client opened.</p>
+          <small class="text-muted">If your email client didn't open, please send your details manually to: juturunandini32@gmail.com</small>
+        `;
+        alertDiv.classList.remove('d-none');
+      }
+      
+      // Reset button state after 3 seconds
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i> SUBMIT';
+      }, 3000);
+    });
+    
+    // Function to send email using mailto
+    function sendEmail(formData) {
+      try {
+        const subject = `New Travel Enquiry from ${formData.name} - G-Tourism`;
+        
+        const body = `
+NEW TRAVEL ENQUIRY - G-TOURISM
+================================
+
+PERSONAL DETAILS:
+-----------------
+Name: ${formData.name}
+City: ${formData.city}
+Email: ${formData.email}
+Phone: ${formData.phone}
+WhatsApp: ${formData.whatsapp}
+
+TRAVEL DETAILS:
+---------------
+Destination: ${formData.destination}
+Travel Date: ${formData.travelDate}
+Number of People: ${formData.people}
+Vacation Type: ${formData.vacationType}
+
+ENQUIRY DETAILS:
+----------------
+This enquiry was submitted through the G-Tourism website contact form.
+Please respond to the customer at your earliest convenience.
+
+Thank you!
+G-Tourism Team
+        `;
+        
+        // Create mailto link
+        const mailtoLink = `mailto:juturunandini32@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // Open email client
+        window.open(mailtoLink, '_blank');
+        
+        return true;
+      } catch (error) {
+        console.error('Error opening email client:', error);
+        return false;
+      }
+    }
+    
+    // Refresh CAPTCHA when clicked
+    document.getElementById('captchaText').addEventListener('click', function() {
+      currentCaptcha = generateCaptcha();
+    });
+    
+    // Set minimum date to today for travel date
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date().toISOString().split('T')[0];
+      const travelDateField = document.getElementById('travelDate');
+      if (travelDateField) {
+        travelDateField.min = today;
+      }
+    });
+    
+    // Auto-fill WhatsApp with phone number if empty
+    const phoneField = document.getElementById('phone');
+    const whatsappField = document.getElementById('whatsapp');
+    if (phoneField && whatsappField) {
+      phoneField.addEventListener('blur', function() {
+        if (!whatsappField.value && this.value) {
+          whatsappField.value = this.value;
+        }
+      });
+    }
+    
+    // Format phone number input
+    if (phoneField) {
+      phoneField.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 10) {
+          value = value.substring(0, 10);
+        }
+        e.target.value = value;
+      });
+    }
+    
+    // Format WhatsApp number input
+    if (whatsappField) {
+      whatsappField.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 10) {
+          value = value.substring(0, 10);
+        }
+        e.target.value = value;
+      });
+    }
+
+    // ... (rest of your existing JavaScript code remains exactly the same)
+    // Utilities
+    async function fileToCompressedDataURL(file, maxW=1200, quality=0.8, mime='image/jpeg'){
+      return new Promise((resolve, reject)=>{
+        try{
+          const reader = new FileReader();
+          reader.onload = ()=>{
+            const img = new Image();
+            img.onload = ()=>{
+              const scale = img.width > maxW ? (maxW / img.width) : 1;
+              const w = Math.max(1, Math.round(img.width * scale));
+              const h = Math.max(1, Math.round(img.height * scale));
+              const canvas = document.createElement('canvas');
+              canvas.width = w; canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              try{
+                const out = canvas.toDataURL(mime, quality);
+                resolve(out);
+              } catch(err){ reject(err); }
+            };
+            img.onerror = reject;
+            img.src = reader.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        }catch(err){ reject(err); }
+      });
+    }
+
+    // GE Details Modal logic
+    let geDetFacts = [];
+    let geDetTour = [];
+    let geDetSlug = '';
+    function slugify(str){ return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+    function geKeyFor(slug){ return `gt_dd_override_${slug}`; }
+    function renderGeFacts(){
+      const ul = document.getElementById('ge-facts-list'); if(!ul) return;
+      ul.innerHTML = '';
+      geDetFacts.forEach((f,i)=>{
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `<span>${f.label||''}: <strong>${f.value||''}</strong></span>
+                        <button class='btn btn-sm btn-outline-danger' data-gfdel='${i}'><i class='fa-regular fa-trash'></i></button>`;
+        ul.appendChild(li);
+      });
+    }
+    function renderGeTour(){
+      const ul = document.getElementById('ge-tp-list'); if(!ul) return;
+      ul.innerHTML = '';
+      geDetTour.forEach((d,i)=>{
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `<span>${d.title||('Day '+(i+1))}</span>
+                        <div class='d-flex align-items-center gap-2'>
+                          ${d.image? `<img src='${d.image}' style='height:28px;border-radius:6px'>`:''}
+                          <button class='btn btn-sm btn-outline-primary' data-gtedit='${i}'><i class='fa-regular fa-pen'></i></button>
+                          <button class='btn btn-sm btn-outline-danger' data-gtdel='${i}'><i class='fa-regular fa-trash'></i></button>
+                        </div>`;
+        ul.appendChild(li);
+      });
+    }
+    function showGePreview(src){ const img = document.getElementById('ge-det-preview'); if(img){ img.src=src; img.style.display=src?'block':'none'; } }
+    if(document.getElementById('ge-det-image')){
+      document.getElementById('ge-det-image').addEventListener('input',()=> showGePreview(document.getElementById('ge-det-image').value.trim()));
+    }
+    if(document.getElementById('ge-det-file')){
+      document.getElementById('ge-det-file').addEventListener('change', async (e)=>{
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        try{ const b64 = await fileToCompressedDataURL(f, 1600, 0.82); document.getElementById('ge-det-image').value=b64; showGePreview(b64); }catch(_e){ alert('Could not process image'); }
+      });
+    }
+    if(document.getElementById('ge-tp-file')){
+      document.getElementById('ge-tp-file').addEventListener('change', async (e)=>{
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        try{ const b64 = await fileToCompressedDataURL(f, 1200, 0.82); document.getElementById('ge-tp-image').value=b64; const p=document.getElementById('ge-tp-preview'); if(p){ p.src=b64; p.style.display='block'; } }catch(_e){ alert('Could not process image'); }
+      });
+    }
+    const geFactAdd = document.getElementById('ge-fact-add');
+    if(geFactAdd){ geFactAdd.addEventListener('click', ()=>{
+      const l = (document.getElementById('ge-fact-label')?.value||'').trim();
+      const v = (document.getElementById('ge-fact-value')?.value||'').trim();
+      if(!l || !v) return; geDetFacts.push({label:l, value:v});
+      document.getElementById('ge-fact-label').value=''; document.getElementById('ge-fact-value').value='';
+      renderGeFacts();
+    }); }
+    const geFactsList = document.getElementById('ge-facts-list');
+    if(geFactsList){ geFactsList.addEventListener('click', (e)=>{ const b=e.target.closest('[data-gfdel]'); if(b){ geDetFacts.splice(+b.getAttribute('data-gfdel'),1); renderGeFacts(); } }); }
+    const geTPAdd = document.getElementById('ge-tp-add');
+    if(geTPAdd){ geTPAdd.addEventListener('click', ()=>{
+      const t = (document.getElementById('ge-tp-title')?.value||'').trim();
+      const b = (document.getElementById('ge-tp-body')?.value||'').trim();
+      const i = (document.getElementById('ge-tp-image')?.value||'').trim();
+      if(!t && !b) return; geDetTour.push({title:t, body:b, image:i});
+      document.getElementById('ge-tp-title').value=''; document.getElementById('ge-tp-body').value=''; document.getElementById('ge-tp-image').value=''; const p=document.getElementById('ge-tp-preview'); if(p){ p.style.display='none'; }
+      renderGeTour();
+    }); }
+    const geTPList = document.getElementById('ge-tp-list');
+    if(geTPList){ geTPList.addEventListener('click', (e)=>{
+      const ed = e.target.closest('[data-gtedit]'); const del = e.target.closest('[data-gtdel]');
+      if(ed){ const i=+ed.getAttribute('data-gtedit'); const it=geDetTour[i]||{}; document.getElementById('ge-tp-title').value=it.title||''; document.getElementById('ge-tp-body').value=it.body||''; document.getElementById('ge-tp-image').value=it.image||''; const p=document.getElementById('ge-tp-preview'); if(p){ p.src=it.image||''; p.style.display=it.image?'block':'none'; } geDetTour.splice(i,1); renderGeTour(); }
+      if(del){ const i=+del.getAttribute('data-gtdel'); geDetTour.splice(i,1); renderGeTour(); }
+    }); }
+
+    function openGEDetailsModal(item){
+      const titleEl = document.getElementById('ge-det-title');
+      const imageEl = document.getElementById('ge-det-image');
+      const d1El = document.getElementById('ge-det-desc1');
+      const d2El = document.getElementById('ge-det-desc2');
+      geDetSlug = slugify(item.title||'');
+      const saved = (()=>{ try{ return JSON.parse(localStorage.getItem(geKeyFor(geDetSlug)))||{}; }catch{ return {}; } })();
+      if(titleEl) titleEl.value = saved.title || item.title || '';
+      if(imageEl) imageEl.value = saved.image || item.image || '';
+      showGePreview(imageEl.value||'');
+      if(d1El) d1El.value = saved.desc1 || '';
+      if(d2El) d2El.value = saved.desc2 || '';
+      // Fixed facts mapping
+      const defs = [
+        { id:'ge-fv-accommodation', label:'Accommodation', iconUrl:'../assets/img/icon/27.svg' },
+        { id:'ge-fv-entry',         label:'Entry Fee',     iconUrl:'../assets/img/icon/28.svg' },
+        { id:'ge-fv-arrival',       label:'Arrival City',  iconUrl:'../assets/img/icon/29.svg' },
+        { id:'ge-fv-language',      label:'Language',      iconUrl:'../assets/img/icon/30.svg' },
+        { id:'ge-fv-transfers',     label:'Airport Transfers', iconUrl:'../assets/img/icon/31.svg' },
+        { id:'ge-fv-island',        label:'Island Tour',   iconUrl:'../assets/img/icon/32.svg' },
+        { id:'ge-fv-guide',         label:'Guide',         iconUrl:'../assets/img/icon/33.svg' },
+        { id:'ge-fv-age',           label:'Recommended Age', iconUrl:'../assets/img/icon/34.svg' },
+      ];
+      function getValByLabel(arr,label){ const f=(arr||[]).find(x=> (x.label||'')===label); return (f&&f.value)||''; }
+      defs.forEach(d=>{ const el=document.getElementById(d.id); if(el) el.value = getValByLabel(saved.facts||[], d.label); });
+      // assemble facts for preview
+      const previewFacts = defs.map(d=>({ label:d.label, value:(document.getElementById(d.id)?.value||'').trim(), iconUrl:d.iconUrl }));
+      // render activities preview in modal
+      (function renderModalActivities(){
+        const r1 = document.getElementById('ge-activities-row1');
+        const r2 = document.getElementById('ge-activities-row2');
+        if(!r1||!r2) return;
+        const items = previewFacts.filter(f=>f.value);
+        const half = Math.ceil(items.length/2);
+        const toHTML = (arr)=> arr.map(f=>`
+          <div class="activities-box-item">
+            <div class="icon"><img src="${typeof normalizeIcon==='function'? normalizeIcon(f.iconUrl): f.iconUrl}" alt="icon"></div>
+            <div class="content"><span>${f.label}</span><h6>${f.value}</h6></div>
+          </div>
+        `).join('');
+        r1.innerHTML = toHTML(items.slice(0,half));
+        r2.innerHTML = toHTML(items.slice(half));
+      })();
+      // attach live preview listeners
+      defs.forEach(d=>{ const el=document.getElementById(d.id); if(el){ el.oninput = ()=>{
+        const factsNow = defs.map(x=>({ label:x.label, value:(document.getElementById(x.id)?.value||'').trim(), iconUrl:x.iconUrl }));
+        const r1 = document.getElementById('ge-activities-row1');
+        const r2 = document.getElementById('ge-activities-row2');
+        if(!r1||!r2) return;
+        const items = factsNow.filter(f=>f.value);
+        const half = Math.ceil(items.length/2);
+        const toHTML = (arr)=> arr.map(f=>`
+          <div class="activities-box-item">
+            <div class="icon"><img src="${typeof normalizeIcon==='function'? normalizeIcon(f.iconUrl): f.iconUrl}" alt="icon"></div>
+            <div class="content"><span>${f.label}</span><h6>${f.value}</h6></div>
+          </div>
+        `).join('');
+        r1.innerHTML = toHTML(items.slice(0,half));
+        r2.innerHTML = toHTML(items.slice(half));
+      }; }});
+      // load arrays for tour plan
+      facts = previewFacts; // keep compatibility if used elsewhere
+      tourPlan = Array.isArray(saved.tourPlan)? saved.tourPlan.slice(): [];
+      renderTP();
+      const m = new bootstrap.Modal(document.getElementById('geDetailsModal')); m.show();
+    }
+    const geDetSave = document.getElementById('ge-det-save');
+    if(geDetSave){ geDetSave.addEventListener('click', ()=>{
+      const defs = [
+        { id:'ge-fv-accommodation', label:'Accommodation', iconUrl:'../assets/img/icon/27.svg' },
+        { id:'ge-fv-entry',         label:'Entry Fee',     iconUrl:'../assets/img/icon/28.svg' },
+        { id:'ge-fv-arrival',       label:'Arrival City',  iconUrl:'../assets/img/icon/29.svg' },
+        { id:'ge-fv-language',      label:'Language',      iconUrl:'../assets/img/icon/30.svg' },
+        { id:'ge-fv-transfers',     label:'Airport Transfers', iconUrl:'../assets/img/icon/31.svg' },
+        { id:'ge-fv-island',        label:'Island Tour',   iconUrl:'../assets/img/icon/32.svg' },
+        { id:'ge-fv-guide',         label:'Guide',         iconUrl:'../assets/img/icon/33.svg' },
+        { id:'ge-fv-age',           label:'Recommended Age', iconUrl:'../assets/img/icon/34.svg' },
+      ];
+      const factsOut = defs.map(d=>({ label:d.label, value:(document.getElementById(d.id)?.value||'').trim(), iconUrl:d.iconUrl }));
+      const payload = {
+        title: (document.getElementById('ge-det-title')?.value||'').trim(),
+        image: (document.getElementById('ge-det-image')?.value||'').trim(),
+        desc1: (document.getElementById('ge-det-desc1')?.value||'').trim(),
+        desc2: (document.getElementById('ge-det-desc2')?.value||'').trim(),
+        facts: factsOut,
+        tourPlan: geDetTour,
+      };
+      try{ localStorage.setItem(geKeyFor(geDetSlug), JSON.stringify(payload)); }catch(e){ alert('Save failed. Try using an image URL or smaller image.'); return; }
+      const idxKey = 'gt_dd_index'; let arr=[]; try{ arr = JSON.parse(localStorage.getItem(idxKey)||'[]'); }catch{}
+      if(!arr.includes(geDetSlug)){ arr.push(geDetSlug); try{ localStorage.setItem(idxKey, JSON.stringify(arr)); }catch{} }
+      bootstrap.Modal.getInstance(document.getElementById('geDetailsModal')).hide();
+    }); }
+
+    // Inline GE Details Editor wiring
+    let geiFacts = [];
+    let geiTour = [];
+    let geiSlug = '';
+    const geiWrap = document.getElementById('ge-details-inline');
+    const geiTitle = document.getElementById('gei-title');
+    const geiImage = document.getElementById('gei-image');
+    const geiFile = document.getElementById('gei-file');
+    const geiPrev = document.getElementById('gei-preview');
+    const geiDesc1 = document.getElementById('gei-desc1');
+    const geiDesc2 = document.getElementById('gei-desc2');
+    const geiCurrent = document.getElementById('gei-current');
+    const geiFactsList = document.getElementById('gei-facts-list');
+    const geiFactAdd = document.getElementById('gei-fact-add');
+    const geiFactLabel = document.getElementById('gei-fact-label');
+    const geiFactValue = document.getElementById('gei-fact-value');
+    const geiFactIconUrl = document.getElementById('gei-fact-iconurl');
+    const geiFactIconFile = document.getElementById('gei-fact-iconfile');
+    const geiTPTitle = document.getElementById('gei-tp-title');
+    const geiTPBody = document.getElementById('gei-tp-body');
+    const geiTPImage = document.getElementById('gei-tp-image');
+    const geiTPFile = document.getElementById('gei-tp-file');
+    const geiTPPrev = document.getElementById('gei-tp-preview');
+    const geiTPAdd = document.getElementById('gei-tp-add');
+    const geiTPList = document.getElementById('gei-tp-list');
+    const geiSave = document.getElementById('gei-save');
+    const geiCancel = document.getElementById('gei-cancel');
+
+    function geiKey(slug){ return `gt_dd_override_${slug}`; }
+    function showGeiPreview(src){ if(geiPrev){ geiPrev.src=src; geiPrev.style.display = src? 'block':'none'; } }
+    function normalizeIcon(u){
+      if(!u) return '../assets/img/icon/27.svg';
+      if(u.startsWith('assets/')) return '../'+u;
+      return u;
+    }
+    function renderGeiFacts(){
+      if(!geiFactsList) return;
+      geiFactsList.innerHTML='';
+      geiFacts.forEach((f,i)=>{
+        const li=document.createElement('li');
+        li.className='list-group-item d-flex justify-content-between align-items-center';
+        const thumb = f.iconUrl? `<img src='${normalizeIcon(f.iconUrl)}' style='height:20px;width:20px;border-radius:4px;margin-right:8px'>` : '';
+        li.innerHTML=`<span>${thumb}${f.label||''}: <strong>${f.value||''}</strong></span>
+                      <button class='btn btn-sm btn-outline-danger' data-gifdel='${i}'><i class='fa-regular fa-trash'></i></button>`;
+        geiFactsList.appendChild(li);
+      });
+      renderGeiActivitiesPreview();
+    }
+
+    function renderGeiActivitiesPreview(){
+      const r1 = document.getElementById('gei-activities-row1');
+      const r2 = document.getElementById('gei-activities-row2');
+      if(!r1 || !r2) return;
+      const items = geiFacts.slice();
+      const half = Math.ceil(items.length/2);
+      const toHTML = (arr)=> arr.map(f=>`
+        <div class="activities-box-item">
+          <div class="icon">
+            <img src="${normalizeIcon(f.iconUrl) }" alt="icon">
+          </div>
+          <div class="content">
+            <span>${f.label||''}</span>
+            <h6>${f.value||''}</h6>
+          </div>
+        </div>
+      `).join('');
+      r1.innerHTML = toHTML(items.slice(0, half));
+      r2.innerHTML = toHTML(items.slice(half));
+    }
+    function renderGeiTour(){ if(!geiTPList) return; geiTPList.innerHTML=''; geiTour.forEach((d,i)=>{ const li=document.createElement('li'); li.className='list-group-item d-flex justify-content-between align-items-center'; li.innerHTML=`<span>${d.title||('Day '+(i+1))}</span><div class='d-flex align-items-center gap-2'>${d.image? `<img src='${d.image}' style='height:28px;border-radius:6px'>`:''}<button class='btn btn-sm btn-outline-primary' data-gitedit='${i}'><i class='fa-regular fa-pen'></i></button><button class='btn btn-sm btn-outline-danger' data-gitdel='${i}'><i class='fa-regular fa-trash'></i></button></div>`; geiTPList.appendChild(li); }); }
+
+    if(geiImage){ geiImage.addEventListener('input', ()=> showGeiPreview(geiImage.value.trim())); }
+    if(geiFile){ geiFile.addEventListener('change', async (e)=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; try{ const b64 = await fileToCompressedDataURL(f,1600,0.82); geiImage.value=b64; showGeiPreview(b64); }catch{} }); }
+    if(geiTPFile){ geiTPFile.addEventListener('change', async (e)=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; try{ const b64 = await fileToCompressedDataURL(f,1200,0.82); geiTPImage.value=b64; if(geiTPPrev){ geiTPPrev.src=b64; geiTPPrev.style.display='block'; } }catch{} }); }
+    if(geiFactAdd){ geiFactAdd.addEventListener('click', ()=>{ const l=(geiFactLabel?.value||'').trim(); const v=(geiFactValue?.value||'').trim(); const iu=(geiFactIconUrl?.value||'').trim(); if(!l||!v) return; geiFacts.push({label:l, value:v, iconUrl:iu}); geiFactLabel.value=''; geiFactValue.value=''; if(geiFactIconUrl) geiFactIconUrl.value=''; renderGeiFacts(); }); }
+    if(geiFactIconFile){ geiFactIconFile.addEventListener('change', async (e)=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; try{ const b64 = await fileToCompressedDataURL(f,256,0.9,'image/png'); if(geiFactIconUrl){ geiFactIconUrl.value=b64; } }catch{} }); }
+    if(geiFactsList){ geiFactsList.addEventListener('click', (e)=>{ const b=e.target.closest('[data-gifdel]'); if(b){ geiFacts.splice(+b.getAttribute('data-gifdel'),1); renderGeiFacts(); } }); }
+    if(geiTPAdd){ geiTPAdd.addEventListener('click', ()=>{ const t=(geiTPTitle?.value||'').trim(); const b=(geiTPBody?.value||'').trim(); const i=(geiTPImage?.value||'').trim(); if(!t && !b) return; geiTour.push({title:t, body:b, image:i}); geiTPTitle.value=''; geiTPBody.value=''; geiTPImage.value=''; if(geiTPPrev){ geiTPPrev.style.display='none'; } renderGeiTour(); }); }
+    if(geiTPList){ geiTPList.addEventListener('click', (e)=>{ const ed=e.target.closest('[data-gitedit]'); const del=e.target.closest('[data-gitdel]'); if(ed){ const i=+ed.getAttribute('data-gitedit'); const it=geiTour[i]||{}; geiTPTitle.value=it.title||''; geiTPBody.value=it.body||''; geiTPImage.value=it.image||''; if(geiTPPrev){ geiTPPrev.src=it.image||''; geiTPPrev.style.display=it.image?'block':'none'; } geiTour.splice(i,1); renderGeiTour(); } if(del){ const i=+del.getAttribute('data-gitdel'); geiTour.splice(i,1); renderGeiTour(); } }); }
+
+    function openGEInline(item){
+      if(!geiWrap) return;
+      geiSlug = slugify(item.title||'');
+      const saved = (()=>{ try{ return JSON.parse(localStorage.getItem(geiKey(geiSlug)))||{}; }catch{ return {}; } })();
+      if(geiCurrent) geiCurrent.textContent = `Editing: ${item.title}`;
+      if(geiTitle) geiTitle.value = saved.title || item.title || '';
+      if(geiImage) geiImage.value = saved.image || item.image || '';
+      showGeiPreview(geiImage?.value||'');
+      if(geiDesc1) geiDesc1.value = saved.desc1 || '';
+      if(geiDesc2) geiDesc2.value = saved.desc2 || '';
+      geiFacts = Array.isArray(saved.facts)? saved.facts.slice(): [];
+      geiTour = Array.isArray(saved.tourPlan)? saved.tourPlan.slice(): [];
+      renderGeiFacts(); renderGeiTour();
+      geiWrap.classList.remove('d-none');
+    }
+    if(geiCancel){ geiCancel.addEventListener('click', ()=>{ if(geiWrap) geiWrap.classList.add('d-none'); }); }
+    if(geiSave){ geiSave.addEventListener('click', ()=>{
+      const payload = {
+        title: (geiTitle?.value||'').trim(),
+        image: (geiImage?.value||'').trim(),
+        desc1: (geiDesc1?.value||'').trim(),
+        desc2: (geiDesc2?.value||'').trim(),
+        facts: geiFacts,
+        tourPlan: geiTour,
+      };
+      try{ localStorage.setItem(geiKey(geiSlug), JSON.stringify(payload)); }catch(e){ alert('Save failed. Try smaller image or URL.'); return; }
+      let arr=[]; try{ arr=JSON.parse(localStorage.getItem('gt_dd_index')||'[]'); }catch{}
+      if(!arr.includes(geiSlug)){ arr.push(geiSlug); try{ localStorage.setItem('gt_dd_index', JSON.stringify(arr)); }catch{} }
+      if(geiWrap) geiWrap.classList.add('d-none');
+    }); }
+
+    // Simple data store in localStorage
+    const store = {
+      get(key, fallback){
+        try{ return JSON.parse(localStorage.getItem(key)) ?? fallback; }catch{ return fallback; }
+      },
+      set(key, val){
+        try{ localStorage.setItem(key, JSON.stringify(val)); }
+        catch(e){ alert('Save failed. Storage might be full. Please use an image URL or a smaller image.'); throw e; }
+      }
+    };
+
+    // Global Escapes categories
+    const geKey = 'gt_admin_ge';
+    const geList = document.getElementById('list-ge');
+    const geForm = document.getElementById('form-ge');
+    // File picker -> base64 + preview
+    (function(){
+      const file = document.getElementById('ge-file');
+      const url = document.getElementById('ge-image');
+      const prev = document.getElementById('ge-preview');
+      function show(src){ if(prev){ prev.src = src; prev.style.display = src? 'block':'none'; } }
+      if(url){ url.addEventListener('input', ()=> show(url.value.trim())); }
+      if(file){
+        file.addEventListener('change', async (e)=>{
+          const f = e.target.files && e.target.files[0];
+          if(!f) return;
+          try{
+            const b64 = await fileToCompressedDataURL(f, 1200, 0.82);
+            if(url) url.value = b64; show(b64);
+          }catch(err){ alert('Could not process image. Please try a different file.'); }
+        });
+      }
+    })();
+    let geEditIndex = null;
+    function renderGE(){
+      const data = store.get(geKey, []);
+      geList.innerHTML = '';
+      data.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        const meta = `${item.days? item.days: ''} ${item.people? ' • '+item.people: ''} ${item.price? ' • '+item.price: ''}`.trim();
+        li.innerHTML = `<span><i class="fa-solid fa-plane me-2 text-info"></i>${item.title} ${meta? `<small class='text-muted'>(${meta})</small>`:''}</span>
+                        <div class="d-flex align-items-center gap-2">
+                          ${item.image ? `<img src="${item.image}" alt="" style="width:140px;aspect-ratio:37/26;object-fit:cover;border-radius:12px">` : ''}
+                          <button class="btn btn-sm btn-outline-secondary" data-details="${idx}">Edit Details</button>
+                          <button class="btn btn-sm btn-outline-primary" data-edit="${idx}"><i class="fa-regular fa-pen"></i></button>
+                          <button class="btn btn-sm btn-outline-danger" data-rm="${idx}"><i class="fa-regular fa-trash"></i></button>
+                        </div>`;
+        geList.appendChild(li);
+      });
+    }
+    geForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const title = document.getElementById('ge-title').value.trim();
+      const image = document.getElementById('ge-image').value.trim();
+      const desc1 = (document.getElementById('ge-desc1')?.value || '').trim();
+      const desc2 = (document.getElementById('ge-desc2')?.value || '').trim();
+      const days = (document.getElementById('ge-days')?.value || '').trim();
+      const people = (document.getElementById('ge-people')?.value || '').trim();
+      const price = (document.getElementById('ge-price')?.value || '').trim();
+      if(!title) return;
+      const data = store.get(geKey, []);
+      if (geEditIndex !== null) {
+        data[geEditIndex] = { title, image, desc1, desc2, days, people, price };
+      } else {
+        data.push({ title, image, desc1, desc2, days, people, price });
+      }
+      store.set(geKey, data);
+      // also create/update the trip override so details page shows descriptions
+      const slug = title.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+      const tKey = `gt_dd_override_${slug}`;
+      try{
+        const existing = JSON.parse(localStorage.getItem(tKey)) || {};
+        const payload = {
+          title: title,
+          image: image || existing.image || '',
+          desc1: desc1 || existing.desc1 || '',
+          desc2: desc2 || existing.desc2 || '',
+          days: days || existing.days || '',
+          people: people || existing.people || '',
+          price: price || existing.price || '',
+          facts: Array.isArray(existing.facts) ? existing.facts : [],
+          tourPlan: Array.isArray(existing.tourPlan) ? existing.tourPlan : []
+        };
+        try{ localStorage.setItem(tKey, JSON.stringify(payload)); }
+        catch(e){ alert('Saving trip override failed (likely storage full). Use image URL or smaller image.'); }
+        // register slug in trip index
+        const idxKey = 'gt_dd_index';
+        let idxArr = [];
+        try{ idxArr = JSON.parse(localStorage.getItem(idxKey) || '[]'); }catch{}
+        if(!idxArr.includes(slug)){
+          idxArr.push(slug);
+          try{ localStorage.setItem(idxKey, JSON.stringify(idxArr)); }
+          catch(e){ /* non-critical */ }
+        }
+      }catch(_e){ /* silent */ }
+      geForm.reset();
+      geEditIndex = null;
+      const geBtn = document.getElementById('ge-submit');
+      if (geBtn) geBtn.innerHTML = '<i class="fa-regular fa-plus"></i> Add Category';
+      renderGE();
+    });
+    geList.addEventListener('click', (e)=>{
+      const rm = e.target.closest('[data-rm]');
+      const ed = e.target.closest('[data-edit]');
+      const det = e.target.closest('[data-details]');
+      if(ed){
+        const idx = parseInt(ed.getAttribute('data-edit'), 10);
+        const data = store.get(geKey, []);
+        const item = data[idx];
+        if(!item) return;
+        document.getElementById('ge-title').value = item.title || '';
+        document.getElementById('ge-image').value = item.image || '';
+        const d1 = document.getElementById('ge-desc1'); if(d1) d1.value = item.desc1 || '';
+        const d2 = document.getElementById('ge-desc2'); if(d2) d2.value = item.desc2 || '';
+        const dd = document.getElementById('ge-days'); if(dd) dd.value = item.days || '';
+        const gp = document.getElementById('ge-people'); if(gp) gp.value = item.people || '';
+        const pr = document.getElementById('ge-price'); if(pr) pr.value = item.price || '';
+        const prev = document.getElementById('ge-preview'); if(prev){ prev.src=item.image||''; prev.style.display=item.image?'block':'none'; }
+        geEditIndex = idx;
+        const geBtn = document.getElementById('ge-submit');
+        if (geBtn) geBtn.innerHTML = '<i class="fa-regular fa-pen"></i> Update Category';
+        return;
+      }
+      if(det){
+        const idx = parseInt(det.getAttribute('data-details'), 10);
+        const data = store.get(geKey, []);
+        const item = data[idx];
+        if(!item) return;
+        openGEDetailsModal(item);
+        return;
+      }
+      if(rm){
+        const idx = parseInt(rm.getAttribute('data-rm'), 10);
+        const data = store.get(geKey, []);
+        data.splice(idx, 1);
+        store.set(geKey, data);
+        renderGE();
+      }
+    });
+
+    // Incredible India categories
+    const iiKey = 'gt_admin_ii';
+    const iiList = document.getElementById('list-ii');
+    const iiForm = document.getElementById('form-ii');
+    // File picker -> base64 + preview
+    (function(){
+      const file = document.getElementById('ii-file');
+      const url = document.getElementById('ii-image');
+      const prev = document.getElementById('ii-preview');
+      function show(src){ if(prev){ prev.src = src; prev.style.display = src? 'block':'none'; } }
+      if(url){ url.addEventListener('input', ()=> show(url.value.trim())); }
+      if(file){
+        file.addEventListener('change', async (e)=>{
+          const f = e.target.files && e.target.files[0];
+          if(!f) return;
+          try{ const b64 = await fileToCompressedDataURL(f, 1200, 0.82); if(url) url.value = b64; show(b64); }
+          catch(err){ alert('Could not process image. Please try a different file.'); }
+        });
+      }
+    })();
+    let iiEditIndex = null;
+    function renderII(){
+      const data = store.get(iiKey, []);
+      iiList.innerHTML = '';
+      data.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        const meta = `${item.days? item.days: ''} ${item.people? ' • '+item.people: ''} ${item.price? ' • '+item.price: ''}`.trim();
+        li.innerHTML = `<span><i class=\"fa-solid fa-umbrella-beach me-2 text-info\"></i>${item.title} ${meta? `<small class='text-muted'>(${meta})</small>`:''}</span>
+                        <div class=\"d-flex align-items-center gap-2\">
+                          ${item.image ? `<img src=\"${item.image}\" alt=\"\" style=\"width:140px;aspect-ratio:37/26;object-fit:cover;border-radius:12px\">` : ''}
+                          <button class=\"btn btn-sm btn-outline-secondary\" data-details=\"${idx}\">Edit Details</button>
+                          <button class=\"btn btn-sm btn-outline-primary\" data-edit=\"${idx}\"><i class=\"fa-regular fa-pen\"></i></button>
+                          <button class=\"btn btn-sm btn-outline-danger\" data-rm=\"${idx}\"><i class=\"fa-regular fa-trash\"></i></button>
+                        </div>`;
+        iiList.appendChild(li);
+      });
+    }
+    iiForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const title = document.getElementById('ii-title').value.trim();
+      const image = document.getElementById('ii-image').value.trim();
+      const days = (document.getElementById('ii-days')?.value||'').trim();
+      const people = (document.getElementById('ii-people')?.value||'').trim();
+      const price = (document.getElementById('ii-price')?.value||'').trim();
+      const desc1 = (document.getElementById('ii-desc1')?.value||'').trim();
+      const desc2 = (document.getElementById('ii-desc2')?.value||'').trim();
+      if(!title) return;
+      const data = store.get(iiKey, []);
+      const payload = { title, image, days, people, price, desc1, desc2 };
+      if(iiEditIndex!==null){ data[iiEditIndex] = payload; }
+      else { data.push(payload); }
+      try{ store.set(iiKey, data); }
+      catch(e){ alert('Save failed. Storage might be full. Please use an image URL or a smaller image.'); }
+
+      // Sync trip override
+      const slug = title.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+      const tKey = `gt_dd_override_${slug}`;
+      try{
+        const existing = JSON.parse(localStorage.getItem(tKey) || '{}');
+        const tPayload = {
+          title,
+          image: image || existing.image || '',
+          desc1: desc1 || existing.desc1 || '',
+          desc2: desc2 || existing.desc2 || '',
+          days: days || existing.days || '',
+          people: people || existing.people || '',
+          price: price || existing.price || '',
+          facts: Array.isArray(existing.facts) ? existing.facts : [],
+          tourPlan: Array.isArray(existing.tourPlan) ? existing.tourPlan : [],
+        };
+        try{ localStorage.setItem(tKey, JSON.stringify(tPayload)); }catch(_e){ }
+        const idxKey = 'gt_dd_index';
+        let idxArr = [];
+        try{ idxArr = JSON.parse(localStorage.getItem(idxKey) || '[]'); }catch{}
+        if(!idxArr.includes(slug)){
+          idxArr.push(slug);
+          try{ localStorage.setItem(idxKey, JSON.stringify(idxArr)); }catch{}
+        }
+      }catch(_e){}
+
+      iiForm.reset();
+      iiEditIndex = null;
+      const iiBtn = document.getElementById('ii-submit');
+      if(iiBtn) iiBtn.innerHTML = '<i class="fa-regular fa-plus"></i> Add Category';
+      renderII();
+    });
+    iiList.addEventListener('click', (e)=>{
+      const edit = e.target.closest('[data-edit]');
+      const rm = e.target.closest('[data-rm]');
+      const det = e.target.closest('[data-details]');
+      if(edit){
+        const idx = parseInt(edit.getAttribute('data-edit'), 10);
+        const data = store.get(iiKey, []);
+        const it = data[idx];
+        if(!it) return;
+        document.getElementById('ii-title').value = it.title || '';
+        document.getElementById('ii-image').value = it.image || '';
+        const dd = document.getElementById('ii-days'); if(dd) dd.value = it.days || '';
+        const gp = document.getElementById('ii-people'); if(gp) gp.value = it.people || '';
+        const pr = document.getElementById('ii-price'); if(pr) pr.value = it.price || '';
+        const d1 = document.getElementById('ii-desc1'); if(d1) d1.value = it.desc1 || '';
+        const d2 = document.getElementById('ii-desc2'); if(d2) d2.value = it.desc2 || '';
+        const prev = document.getElementById('ii-preview'); if(prev){ prev.src = it.image||''; prev.style.display = it.image? 'block':'none'; }
+        iiEditIndex = idx;
+        const iiBtn = document.getElementById('ii-submit');
+        if(iiBtn) iiBtn.innerHTML = '<i class="fa-regular fa-pen"></i> Update Category';
+        return;
+      }
+      if(det){
+        const idx = parseInt(det.getAttribute('data-details'), 10);
+        const data = store.get(iiKey, []);
+        const item = data[idx];
+        if(!item) return;
+        openIIDetailsModal(item);
+        return;
+      }
+      if(rm){
+        const idx = parseInt(rm.getAttribute('data-rm'), 10);
+        const data = store.get(iiKey, []);
+        data.splice(idx, 1);
+        try{ store.set(iiKey, data); }catch(_e){}
+        renderII();
+      }
+    });
+
+    // Incredible India Details Modal logic
+    let iiDetFacts = [];
+    let iiDetTour = [];
+    let iiDetSlug = '';
+    function iiKeyFor(slug){ return `gt_dd_override_${slug}`; }
+    function renderIIFacts(){
+      const ul = document.getElementById('ii-facts-list'); if(!ul) return;
+      ul.innerHTML = '';
+      iiDetFacts.forEach((f,i)=>{
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `<span>${f.label||''}: <strong>${f.value||''}</strong></span>
+                        <button class='btn btn-sm btn-outline-danger' data-iifdel='${i}'><i class='fa-regular fa-trash'></i></button>`;
+        ul.appendChild(li);
+      });
+    }
+    function renderIITour(){
+      const ul = document.getElementById('ii-tp-list'); if(!ul) return;
+      ul.innerHTML = '';
+      iiDetTour.forEach((d,i)=>{
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `<span>${d.title||('Day '+(i+1))}</span>
+                        <div class='d-flex align-items-center gap-2'>
+                          ${d.image? `<img src='${d.image}' style='height:28px;border-radius:6px'>`:''}
+                          <button class='btn btn-sm btn-outline-primary' data-iitedit='${i}'><i class='fa-regular fa-pen'></i></button>
+                          <button class='btn btn-sm btn-outline-danger' data-iitdel='${i}'><i class='fa-regular fa-trash'></i></button>
+                        </div>`;
+        ul.appendChild(li);
+      });
+    }
+    function showIIPreview(src){ const img = document.getElementById('ii-det-preview'); if(img){ img.src=src; img.style.display=src?'block':'none'; } }
+    if(document.getElementById('ii-det-image')){
+      document.getElementById('ii-det-image').addEventListener('input',()=> showIIPreview(document.getElementById('ii-det-image').value.trim()));
+    }
+    if(document.getElementById('ii-det-file')){
+      document.getElementById('ii-det-file').addEventListener('change', async (e)=>{
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        try{ const b64 = await fileToCompressedDataURL(f, 1600, 0.82); document.getElementById('ii-det-image').value=b64; showIIPreview(b64); }catch(_e){ alert('Could not process image'); }
+      });
+    }
+    if(document.getElementById('ii-tp-file')){
+      document.getElementById('ii-tp-file').addEventListener('change', async (e)=>{
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        try{ const b64 = await fileToCompressedDataURL(f, 1200, 0.82); document.getElementById('ii-tp-image').value=b64; const p=document.getElementById('ii-tp-preview'); if(p){ p.src=b64; p.style.display='block'; } }catch(_e){ alert('Could not process image'); }
+      });
+    }
+    const iiTPAdd = document.getElementById('ii-tp-add');
+    if(iiTPAdd){ iiTPAdd.addEventListener('click', ()=>{
+      const t = (document.getElementById('ii-tp-title')?.value||'').trim();
+      const b = (document.getElementById('ii-tp-body')?.value||'').trim();
+      const i = (document.getElementById('ii-tp-image')?.value||'').trim();
+      if(!t && !b) return; iiDetTour.push({title:t, body:b, image:i});
+      document.getElementById('ii-tp-title').value=''; document.getElementById('ii-tp-body').value=''; document.getElementById('ii-tp-image').value=''; const p=document.getElementById('ii-tp-preview'); if(p){ p.style.display='none'; }
+      renderIITour();
+    }); }
+    const iiTPList = document.getElementById('ii-tp-list');
+    if(iiTPList){ iiTPList.addEventListener('click', (e)=>{
+      const ed = e.target.closest('[data-iitedit]'); const del = e.target.closest('[data-iitdel]');
+      if(ed){ const i=+ed.getAttribute('data-iitedit'); const it=iiDetTour[i]||{}; document.getElementById('ii-tp-title').value=it.title||''; document.getElementById('ii-tp-body').value=it.body||''; document.getElementById('ii-tp-image').value=it.image||''; const p=document.getElementById('ii-tp-preview'); if(p){ p.src=it.image||''; p.style.display=it.image?'block':'none'; } iiDetTour.splice(i,1); renderIITour(); }
+      if(del){ const i=+del.getAttribute('data-iitdel'); iiDetTour.splice(i,1); renderIITour(); }
+    }); }
+
+    function openIIDetailsModal(item){
+      const titleEl = document.getElementById('ii-det-title');
+      const imageEl = document.getElementById('ii-det-image');
+      const d1El = document.getElementById('ii-det-desc1');
+      const d2El = document.getElementById('ii-det-desc2');
+      iiDetSlug = slugify(item.title||'');
+      const saved = (()=>{ try{ return JSON.parse(localStorage.getItem(iiKeyFor(iiDetSlug)))||{}; }catch{ return {}; } })();
+      if(titleEl) titleEl.value = saved.title || item.title || '';
+      if(imageEl) imageEl.value = saved.image || item.image || '';
+      showIIPreview(imageEl.value||'');
+      if(d1El) d1El.value = saved.desc1 || '';
+      if(d2El) d2El.value = saved.desc2 || '';
+      // Fixed facts mapping for Incredible India
+      const defs = [
+        { id:'ii-fv-accommodation', label:'Accommodation', iconUrl:'../assets/img/icon/27.svg' },
+        { id:'ii-fv-entry',         label:'Entry Fee',     iconUrl:'../assets/img/icon/28.svg' },
+        { id:'ii-fv-arrival',       label:'Arrival City',  iconUrl:'../assets/img/icon/29.svg' },
+        { id:'ii-fv-language',      label:'Language',      iconUrl:'../assets/img/icon/30.svg' },
+        { id:'ii-fv-transfers',     label:'Airport Transfers', iconUrl:'../assets/img/icon/31.svg' },
+        { id:'ii-fv-local',         label:'Local Tour',    iconUrl:'../assets/img/icon/32.svg' },
+        { id:'ii-fv-guide',         label:'Guide',         iconUrl:'../assets/img/icon/33.svg' },
+        { id:'ii-fv-age',           label:'Recommended Age', iconUrl:'../assets/img/icon/34.svg' },
+      ];
+      function getValByLabel(arr,label){ const f=(arr||[]).find(x=> (x.label||'')===label); return (f&&f.value)||''; }
+      defs.forEach(d=>{ const el=document.getElementById(d.id); if(el) el.value = getValByLabel(saved.facts||[], d.label); });
+      // assemble facts for preview
+      const previewFacts = defs.map(d=>({ label:d.label, value:(document.getElementById(d.id)?.value||'').trim(), iconUrl:d.iconUrl }));
+      // render activities preview in modal
+      (function renderModalActivities(){
+        const r1 = document.getElementById('ii-activities-row1-modal');
+        const r2 = document.getElementById('ii-activities-row2-modal');
+        if(!r1||!r2) return;
+        const items = previewFacts.filter(f=>f.value);
+        const half = Math.ceil(items.length/2);
+        const toHTML = (arr)=> arr.map(f=>`
+          <div class="activities-box-item">
+            <div class="icon"><img src="${typeof normalizeIcon==='function'? normalizeIcon(f.iconUrl): f.iconUrl}" alt="icon"></div>
+            <div class="content"><span>${f.label}</span><h6>${f.value}</h6></div>
+          </div>
+        `).join('');
+        r1.innerHTML = toHTML(items.slice(0,half));
+        r2.innerHTML = toHTML(items.slice(half));
+      })();
+      // attach live preview listeners
+      defs.forEach(d=>{ const el=document.getElementById(d.id); if(el){ el.oninput = ()=>{
+        const factsNow = defs.map(x=>({ label:x.label, value:(document.getElementById(x.id)?.value||'').trim(), iconUrl:x.iconUrl }));
+        const r1 = document.getElementById('ii-activities-row1-modal');
+        const r2 = document.getElementById('ii-activities-row2-modal');
+        if(!r1||!r2) return;
+        const items = factsNow.filter(f=>f.value);
+        const half = Math.ceil(items.length/2);
+        const toHTML = (arr)=> arr.map(f=>`
+          <div class="activities-box-item">
+            <div class="icon"><img src="${typeof normalizeIcon==='function'? normalizeIcon(f.iconUrl): f.iconUrl}" alt="icon"></div>
+            <div class="content"><span>${f.label}</span><h6>${f.value}</h6></div>
+          </div>
+        `).join('');
+        r1.innerHTML = toHTML(items.slice(0,half));
+        r2.innerHTML = toHTML(items.slice(half));
+      }; }});
+      // load arrays for tour plan
+      iiDetTour = Array.isArray(saved.tourPlan)? saved.tourPlan.slice(): [];
+      renderIITour();
+      const m = new bootstrap.Modal(document.getElementById('iiDetailsModal')); m.show();
+    }
+    const iiDetSave = document.getElementById('ii-det-save');
+    if(iiDetSave){ iiDetSave.addEventListener('click', ()=>{
+      const defs = [
+        { id:'ii-fv-accommodation', label:'Accommodation', iconUrl:'../assets/img/icon/27.svg' },
+        { id:'ii-fv-entry',         label:'Entry Fee',     iconUrl:'../assets/img/icon/28.svg' },
+        { id:'ii-fv-arrival',       label:'Arrival City',  iconUrl:'../assets/img/icon/29.svg' },
+        { id:'ii-fv-language',      label:'Language',      iconUrl:'../assets/img/icon/30.svg' },
+        { id:'ii-fv-transfers',     label:'Airport Transfers', iconUrl:'../assets/img/icon/31.svg' },
+        { id:'ii-fv-local',         label:'Local Tour',    iconUrl:'../assets/img/icon/32.svg' },
+        { id:'ii-fv-guide',         label:'Guide',         iconUrl:'../assets/img/icon/33.svg' },
+        { id:'ii-fv-age',           label:'Recommended Age', iconUrl:'../assets/img/icon/34.svg' },
+      ];
+      const factsOut = defs.map(d=>({ label:d.label, value:(document.getElementById(d.id)?.value||'').trim(), iconUrl:d.iconUrl }));
+      const payload = {
+        title: (document.getElementById('ii-det-title')?.value||'').trim(),
+        image: (document.getElementById('ii-det-image')?.value||'').trim(),
+        desc1: (document.getElementById('ii-det-desc1')?.value||'').trim(),
+        desc2: (document.getElementById('ii-det-desc2')?.value||'').trim(),
+        facts: factsOut,
+        tourPlan: iiDetTour,
+      };
+      try{ localStorage.setItem(iiKeyFor(iiDetSlug), JSON.stringify(payload)); }catch(e){ alert('Save failed. Try using an image URL or smaller image.'); return; }
+      const idxKey = 'gt_dd_index'; let arr=[]; try{ arr = JSON.parse(localStorage.getItem(idxKey)||'[]'); }catch{}
+      if(!arr.includes(iiDetSlug)){ arr.push(iiDetSlug); try{ localStorage.setItem(idxKey, JSON.stringify(arr)); }catch{} }
+      bootstrap.Modal.getInstance(document.getElementById('iiDetailsModal')).hide();
+    }); }
+
+    // Plan Your Journey places
+    const pyjKey = 'gt_admin_pyj';
+    const pyjList = document.getElementById('list-pyj');
+    const pyjForm = document.getElementById('form-pyj');
+    // File picker -> base64 + preview
+    (function(){
+      const file = document.getElementById('pyj-file');
+      const url = document.getElementById('pyj-image');
+      const prev = document.getElementById('pyj-preview');
+      function show(src){ if(prev){ prev.src = src; prev.style.display = src? 'block':'none'; } }
+      if(url){ url.addEventListener('input', ()=> show(url.value.trim())); }
+      if(file){
+        file.addEventListener('change', async (e)=>{
+          const f = e.target.files && e.target.files[0];
+          if(!f) return;
+          try{ const b64 = await fileToCompressedDataURL(f, 1200, 0.82); if(url) url.value = b64; show(b64); }
+          catch(err){ alert('Could not process image. Please try a different file.'); }
+        });
+      }
+    })();
+    function renderPYJ(){
+      const data = store.get(pyjKey, []);
+      pyjList.innerHTML = '';
+      data.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.innerHTML = `<span><i class=\"fa-regular fa-location-dot me-2 text-info\"></i><strong>${item.location}</strong> — ${item.title} <small class=\"text-muted\">(${item.days}, ${item.people}, ${item.price})</small></span>
+                        <div class=\"d-flex align-items-center gap-2\">
+                          ${item.image ? `<img src="${item.image}" alt="" style="height:28px;border-radius:6px">` : ''}
+                          <button class=\"btn btn-sm btn-outline-danger\" data-rm=\"${idx}\"><i class=\"fa-regular fa-trash\"></i></button>
+                        </div>`;
+        pyjList.appendChild(li);
+      });
+    }
+    pyjForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const location = document.getElementById('pyj-location').value.trim();
+      const title = document.getElementById('pyj-title').value.trim();
+      const image = document.getElementById('pyj-image').value.trim();
+      const days = document.getElementById('pyj-days').value.trim();
+      const people = document.getElementById('pyj-people').value.trim();
+      const price = document.getElementById('pyj-price').value.trim();
+      if(!location || !title) return;
+      const data = store.get(pyjKey, []);
+      data.push({ location, title, image, days, people, price });
+      try{ store.set(pyjKey, data); }
+      catch(e){ alert('Save failed. Storage might be full. Please use an image URL or a smaller image.'); }
+      pyjForm.reset();
+      renderPYJ();
+    });
+    pyjList.addEventListener('click', (e)=>{
+      const rm = e.target.closest('[data-rm]');
+      if(!rm) return;
+      const idx = parseInt(rm.getAttribute('data-rm'), 10);
+      const data = store.get(pyjKey, []);
+      data.splice(idx, 1);
+      try{ store.set(pyjKey, data); }
+      catch(e){ alert('Save failed. Storage might be full. Please use an image URL or a smaller image.'); }
+      renderPYJ();
+    });
+
+    // Trip Details Editor logic
+    const tripForm = document.getElementById('form-trip');
+    const tripList = document.getElementById('list-trip');
+    const tripSlug = document.getElementById('trip-slug');
+    const tripTitle = document.getElementById('trip-title');
+    const tripImage = document.getElementById('trip-image');
+    const tripFile = document.getElementById('trip-file');
+    const tripPreview = document.getElementById('trip-preview');
+    const tripDesc1 = document.getElementById('trip-desc1');
+    const tripDesc2 = document.getElementById('trip-desc2');
+    const tripView = document.getElementById('trip-view-link');
+
+    function slugify(str){
+      return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    }
+    function tripKey(slug){ return `gt_dd_override_${slug}`; }
+    const tripIndexKey = 'gt_dd_index';
+    function getTripIndex(){ try{ return JSON.parse(localStorage.getItem(tripIndexKey)) || []; }catch{ return []; } }
+    function setTripIndex(arr){ localStorage.setItem(tripIndexKey, JSON.stringify(arr)); }
+
+    // preview handlers
+    function showTripPreview(src){ if(tripPreview){ tripPreview.src = src; tripPreview.style.display = src? 'block':'none'; } }
+    if(tripImage){ tripImage.addEventListener('input', ()=> showTripPreview(tripImage.value.trim())); }
+    if(tripFile){
+      tripFile.addEventListener('change', async (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        try{ const b64 = await fileToCompressedDataURL(f, 1600, 0.82); if(tripImage) tripImage.value = b64; showTripPreview(b64); }
+        catch(err){ alert('Could not process image. Please try a different file.'); }
+      });
+    }
+
+    // Facts + Tour Plan local state
+    let facts = [];
+    let tourPlan = [];
+
+    // Facts UI
+    const factLabel = document.getElementById('fact-label');
+    const factValue = document.getElementById('fact-value');
+    const factAdd = document.getElementById('fact-add');
+    const factsList = document.getElementById('facts-list');
+    function renderFacts(){
+      if(!factsList) return;
+      factsList.innerHTML = '';
+      facts.forEach((f, i) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `<span>${f.label||''}: <strong>${f.value||''}</strong></span>
+                        <button class="btn btn-sm btn-outline-danger" data-fdel="${i}"><i class="fa-regular fa-trash"></i></button>`;
+        factsList.appendChild(li);
+      });
+    }
+    if(factAdd){
+      factAdd.addEventListener('click', ()=>{
+        const label = (factLabel?.value||'').trim();
+        const value = (factValue?.value||'').trim();
+        if(!label || !value) return;
+        facts.push({label, value});
+        if(factLabel) factLabel.value = '';
+        if(factValue) factValue.value = '';
+        renderFacts();
+      });
+    }
+    if(factsList){
+      factsList.addEventListener('click', (e)=>{
+        const btn = e.target.closest('[data-fdel]');
+        if(btn){ const idx = +btn.getAttribute('data-fdel'); facts.splice(idx,1); renderFacts(); }
+      });
+    }
+
+    // Tour Plan UI
+    const tpTitle = document.getElementById('tp-title');
+    const tpBody = document.getElementById('tp-body');
+    const tpImage = document.getElementById('tp-image');
+    const tpFile = document.getElementById('tp-file');
+    const tpPreview = document.getElementById('tp-preview');
+    const tpAdd = document.getElementById('tp-add');
+    const tpList = document.getElementById('tp-list');
+    function showTPPreview(src){ if(tpPreview){ tpPreview.src = src; tpPreview.style.display = src? 'block':'none'; } }
+    if(tpImage){ tpImage.addEventListener('input', ()=> showTPPreview(tpImage.value.trim())); }
+    if(tpFile){
+      tpFile.addEventListener('change', async (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        try{ const b64 = await fileToCompressedDataURL(f, 1200, 0.82); if(tpImage) tpImage.value = b64; showTPPreview(b64); }
+        catch(err){ alert('Could not process image. Please try a different file.'); }
+      });
+    }
+    function renderTP(){
+      if(!tpList) return;
+      tpList.innerHTML = '';
+      tourPlan.forEach((d, i) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `<span>${d.title||('Day '+(i+1))}</span>
+                        <div class="d-flex align-items-center gap-2">
+                          ${d.image? `<img src="${d.image}" style="height:28px;border-radius:6px">`:''}
+                          <button class="btn btn-sm btn-outline-primary" data-tedit="${i}"><i class="fa-regular fa-pen"></i></button>
+                          <button class="btn btn-sm btn-outline-danger" data-tdel="${i}"><i class="fa-regular fa-trash"></i></button>
+                        </div>`;
+        tpList.appendChild(li);
+      });
+    }
+    if(tpAdd){
+      tpAdd.addEventListener('click', ()=>{
+        const item = { title: (tpTitle?.value||'').trim(), body: (tpBody?.value||'').trim(), image: (tpImage?.value||'').trim() };
+        if(!item.title && !item.body) return;
+        tourPlan.push(item);
+        if(tpTitle) tpTitle.value='';
+        if(tpBody) tpBody.value='';
+        if(tpImage) tpImage.value='';
+        showTPPreview('');
+        renderTP();
+      });
+    }
+    if(tpList){
+      tpList.addEventListener('click', (e)=>{
+        const ed = e.target.closest('[data-tedit]');
+        const del = e.target.closest('[data-tdel]');
+        if(ed){
+          const i = +ed.getAttribute('data-tedit');
+          const it = tourPlan[i]||{};
+          if(tpTitle) tpTitle.value = it.title||'';
+          if(tpBody) tpBody.value = it.body||'';
+          if(tpImage) tpImage.value = it.image||'';
+          showTPPreview(it.image||'');
+          tourPlan.splice(i,1);
+          renderTP();
+        }
+        if(del){ const i = +del.getAttribute('data-tdel'); tourPlan.splice(i,1); renderTP(); }
+      });
+    }
+
+    function renderTrips(){
+      if(!tripList) return;
+      const slugs = getTripIndex();
+      tripList.innerHTML = '';
+      slugs.forEach((slug)=>{
+        const data = (()=>{ try{ return JSON.parse(localStorage.getItem(tripKey(slug))) || {}; }catch{ return {}; } })();
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        const img = data.image ? `<img src="${data.image}" alt="" style="height:28px;border-radius:6px">` : '';
+        li.innerHTML = `<span><strong>${slug}</strong> — ${data.title||''}</span>
+                        <div class="d-flex align-items-center gap-2">
+                          ${img}
+                          <a class="btn btn-sm btn-outline-secondary" target="_blank" href="../destination-details.html?id=${slug}">View</a>
+                          <button class="btn btn-sm btn-outline-primary" data-edit="${slug}"><i class="fa-regular fa-pen"></i></button>
+                          <button class="btn btn-sm btn-outline-danger" data-rm="${slug}"><i class="fa-regular fa-trash"></i></button>
+                        </div>`;
+        tripList.appendChild(li);
+      });
+    }
+
+    if (tripForm){
+      tripForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const slug = slugify(tripSlug.value || tripTitle.value);
+        if(!slug) return;
+        const data = {
+          title: (tripTitle.value||'').trim(),
+          image: (tripImage.value||'').trim(),
+          desc1: (tripDesc1.value||'').trim(),
+          desc2: (tripDesc2.value||'').trim(),
+          facts: facts,
+          tourPlan: tourPlan,
+        };
+        localStorage.setItem(tripKey(slug), JSON.stringify(data));
+        const idx = getTripIndex();
+        if(!idx.includes(slug)){ idx.push(slug); setTripIndex(idx); }
+        renderTrips();
+        if(tripView){ tripView.href = `../destination-details.html?id=${slug}`; }
+      });
+    }
+
+    if (tripList){
+      tripList.addEventListener('click', (e)=>{
+        const editBtn = e.target.closest('[data-edit]');
+        const rmBtn = e.target.closest('[data-rm]');
+        if(editBtn){
+          const slug = editBtn.getAttribute('data-edit');
+          const data = JSON.parse(localStorage.getItem(tripKey(slug))||'{}');
+          if(tripSlug) tripSlug.value = slug;
+          if(tripTitle) tripTitle.value = data.title||'';
+          if(tripImage) tripImage.value = data.image||'';
+          showTripPreview(data.image||'');
+          if(tripDesc1) tripDesc1.value = data.desc1||'';
+          if(tripDesc2) tripDesc2.value = data.desc2||'';
+          if(tripView) tripView.href = `../destination-details.html?id=${slug}`;
+          // load arrays
+          facts = Array.isArray(data.facts)? data.facts.slice(): [];
+          tourPlan = Array.isArray(data.tourPlan)? data.tourPlan.slice(): [];
+          renderFacts();
+          renderTP();
+        }
+        if(rmBtn){
+          const slug = rmBtn.getAttribute('data-rm');
+          localStorage.removeItem(tripKey(slug));
+          const idx = getTripIndex().filter(s=>s!==slug);
+          setTripIndex(idx);
+          renderTrips();
+        }
+      });
+    }
+
+    // Initial trip load
+    renderTrips();
+
+    // Backup & Restore logic
+    function collectAdminData(){
+      const keys = ['gt_admin_ge','gt_admin_ii','gt_admin_pyj','gt_dd_index'];
+      const out = {};
+      keys.forEach(k=>{ try{ out[k] = JSON.parse(localStorage.getItem(k)||'null'); }catch{ out[k]=null; } });
+      // collect all trip overrides by index
+      const idx = Array.isArray(out.gt_dd_index)? out.gt_dd_index : [];
+      out.trip_overrides = {};
+      idx.forEach(slug=>{
+        const k = `gt_dd_override_${slug}`;
+        try{ out.trip_overrides[k] = JSON.parse(localStorage.getItem(k)||'null'); }catch{ out.trip_overrides[k]=null; }
+      });
+      return out;
+    }
+    function applyAdminData(data){
+      if(!data || typeof data !== 'object') return;
+      const assign = (k,v)=>{ if(v!==null && v!==undefined) try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+      assign('gt_admin_ge', data.gt_admin_ge || []);
+      assign('gt_admin_ii', data.gt_admin_ii || []);
+      assign('gt_admin_pyj', data.gt_admin_pyj || []);
+      const idx = Array.isArray(data.gt_dd_index)? data.gt_dd_index : [];
+      assign('gt_dd_index', idx);
+      if(data.trip_overrides && typeof data.trip_overrides==='object'){
+        Object.entries(data.trip_overrides).forEach(([k,v])=>{ assign(k,v||{}); });
+      }
+      // re-render
+      renderGE();
+      renderII();
+      renderPYJ();
+      renderTrips();
+    }
+    (function(){
+      const btnExport = document.getElementById('btn-export');
+      const fileInput = document.getElementById('file-import');
+      if(btnExport){
+        btnExport.addEventListener('click', ()=>{
+          const payload = collectAdminData();
+          const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = 'gtourism-admin-backup.json';
+          document.body.appendChild(a); a.click();
+          setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+        });
+      }
+      if(fileInput){
+        fileInput.addEventListener('change', ()=>{
+          const f = fileInput.files && fileInput.files[0];
+          if(!f) return;
+          const reader = new FileReader();
+          reader.onload = ()=>{
+            try{ const data = JSON.parse(reader.result); applyAdminData(data); alert('Import complete.'); }
+            catch(e){ alert('Invalid backup file.'); }
+          };
+          reader.readAsText(f);
+          fileInput.value = '';
+        });
+      }
+    })();
+
+    // Sign out button
+    document.getElementById('signoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('gt_admin_auth');
+      window.location.href = './login.html';
+    });
+
+    // Initial renders
+    renderGE();
+    renderII();
+    renderPYJ();
+    renderTrips();
+  </script>
+</body>
+</html>

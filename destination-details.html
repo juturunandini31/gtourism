@@ -242,6 +242,7 @@
             </div>
         </section>
 
+
         <!-- destination-details Section Start -->
         <section class="destination-details-section fix section-padding">
             <div class="container">
@@ -250,15 +251,16 @@
                         <div class="col-lg-8">
                             <div class="destination-details-items">
                                 <div class="details-image">
-                                    <img src="./assets/img/bangkok_phuket.webp" alt="img">
+                                    <img id="dd-image" src="./assets/img/bangkok_phuket.webp" alt="img">
                                 </div>
                                 <div class="details-content">
-                                    <h2>Bangkok & Phuket - 5 Nights 6 Days</h2>
-                                      <p>
+                                    
+                                    <h2 id="dd-title">Bangkok & Phuket - 5 Nights 6 Days</h2>
+                                      <p id="dd-desc1">
             Experience the perfect blend of vibrant city life and serene beaches with our Bangkok & Phuket tour package. 
             Explore bustling markets, ancient temples, and lively nightlife in Bangkok, then unwind on the golden sands of Phuket's beaches.
         </p>
-                                     <p class="mt-3">
+                                     <p id="dd-desc2" class="mt-3">
             This 5 Nights and 6 Days package covers the best of both worlds—cultural sightseeing, island hopping, water sports, 
             and luxurious beach resorts, making it ideal for couples, friends, or families looking for a tropical escape.
         </p>
@@ -343,7 +345,7 @@
                                     </ul>
                                 </div>
                             </div>
-                        <div class="activities-box-wrap">
+                        <div class="activities-box-wrap" id="dd-facts">
     <div class="activities-box-area">
         <div class="activities-box-item">
             <div class="icon">
@@ -789,5 +791,76 @@
         <script src="assets/js/wow.min.js"></script>
         <!--<< Main.js >>-->
         <script src="assets/js/main.js"></script>
+        <script>
+          (function(){
+            const titleEl = document.getElementById('dd-title');
+            const imgEl = document.getElementById('dd-image');
+            const d1El = document.getElementById('dd-desc1');
+            const d2El = document.getElementById('dd-desc2');
+            const factsWrap = document.getElementById('dd-facts');
+            const accEl = document.getElementById('accordion');
+
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('id') || 'default';
+            const KEY = `gt_dd_override_${slug}`;
+            function apply(data){
+              if(!data) return;
+              if (data.title && titleEl) titleEl.textContent = data.title;
+              if (data.image && imgEl) imgEl.src = data.image;
+              if (data.desc1 && d1El) d1El.textContent = data.desc1;
+              if (data.desc2 && d2El) d2El.textContent = data.desc2;
+            }
+
+            try{
+              let saved = JSON.parse(localStorage.getItem(KEY));
+              if (!saved) {
+                const ge = JSON.parse(localStorage.getItem('gt_admin_ge')) || [];
+                const match = ge.find(x => (x.title||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') === slug);
+                if (match) {
+                  saved = { title: match.title, image: match.image || '', desc1: d1El?.textContent?.trim() || '', desc2: d2El?.textContent?.trim() || '' };
+                }
+              }
+              apply(saved);
+              // Render Facts grid if provided
+              if (saved && Array.isArray(saved.facts) && saved.facts.length && factsWrap){
+                const chunk = (arr, size)=>arr.reduce((a,_,i)=> (i%size? a[a.length-1].push(arr[i]) : a.push([arr[i]]), a), []);
+                const rows = chunk(saved.facts, 4).map(row => {
+                  const items = row.map(it => `
+                    <div class="activities-box-item">
+                      <div class="icon">
+                        <img src="assets/img/icon/27.svg" alt="icon">
+                      </div>
+                      <div class="content">
+                        <span>${it.label||''}</span>
+                        <h6>${it.value||''}</h6>
+                      </div>
+                    </div>`).join('');
+                  return `<div class="activities-box-area">${items}</div>`;
+                }).join('');
+                factsWrap.innerHTML = rows;
+              }
+              // Render Tour Plan if provided
+              if (saved && Array.isArray(saved.tourPlan) && saved.tourPlan.length && accEl){
+                accEl.innerHTML = saved.tourPlan.map((day, idx)=>{
+                  const id = `faq${idx+1}`;
+                  return `
+                  <div class="accordion-item mb-3">
+                    <h5 class="accordion-header">
+                      <button class="accordion-button ${idx? 'collapsed':''}" type="button" data-bs-toggle="collapse" data-bs-target="#${id}" aria-expanded="${idx? 'false':'true'}" aria-controls="${id}">
+                        ${day.title || ('Day ' + (idx+1))}
+                      </button>
+                    </h5>
+                    <div id="${id}" class="accordion-collapse collapse ${idx? '':'show'}" data-bs-parent="#accordion">
+                      <div class="accordion-body">
+                        <p>${day.body||''}</p>
+                        ${day.image ? `<div class="faq-image"><img src="${day.image}" alt=""></div>` : ''}
+                      </div>
+                    </div>
+                  </div>`;
+                }).join('');
+              }
+            } catch(e){}
+          })();
+        </script>
     </body>
 </html>

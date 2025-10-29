@@ -32,6 +32,14 @@
         <link rel="stylesheet" href="assets/css/color.css">
         <!--<< Main.css >>-->
         <link rel="stylesheet" href="assets/css/main.css">
+        <style>
+          /* Scoped: add 5px around each card container in the Plan Your Journey grid */
+          #pyj-grid .row.g-4 > [class*="col-"] { padding: 5px; }
+          /* Scoped: add 5px inside the grid container edges */
+          #pyj-grid .container.custom-container { padding: 5px; }
+          /* Scoped: add 5px inside each card so spacing is equal on all four sides */
+          #pyj-grid .destination-card-items { padding: 5px; box-sizing: border-box; }
+        </style>
     </head>
     <body>
 
@@ -384,11 +392,12 @@
         </div>
     </div>
 </div>
-  
-<section class="tour-section section-padding fix">
+
+<section id="pyj-grid" class="tour-section section-padding fix">
   <div class="container custom-container">
     <div class="tour-destination-wrapper">
       <div class="row g-4">
+        <div id="pyj-dynamic-slot" style="display: contents;"></div>
 
         <!-- 1. Munnar / Thekkady -->
         <div class="col-xl-4 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay=".3s">
@@ -816,6 +825,120 @@
          <script src="assets/js/bootstrap-datepicker.js"></script>
         <!--<< Magnific Popup Js >>-->
         <script src="assets/js/jquery.magnific-popup.min.js"></script>
+        <script>
+          // Populate Destination based on Trip Type using admin data
+          (function(){
+            const tripTypeSel = document.getElementById('tripType');
+            const destSel = document.getElementById('destination');
+            function get(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch{ return []; } }
+            const ii = get('gt_admin_ii'); // Domestic
+            const ge = get('gt_admin_ge'); // International
+
+            function setOptions(type){
+              if(!destSel) return;
+              destSel.innerHTML = '';
+              const def = document.createElement('option');
+              def.value = ''; def.textContent = 'Select Destination';
+              destSel.appendChild(def);
+              // If no type selected, show both groups
+              const addGroup = (label, list)=>{
+                if(!list || !list.length) return;
+                const og = document.createElement('optgroup');
+                og.label = label;
+                list.forEach(item=>{
+                  if(!item || !item.title) return;
+                  const opt = document.createElement('option');
+                  opt.value = item.title;
+                  opt.textContent = item.title;
+                  og.appendChild(opt);
+                });
+                destSel.appendChild(og);
+              };
+              if(type === 'domestic') addGroup('Domestic Tours', Array.isArray(ii)? ii: []);
+              else if(type === 'international') addGroup('International Tours', Array.isArray(ge)? ge: []);
+              else { // both
+                addGroup('Domestic Tours', Array.isArray(ii)? ii: []);
+                addGroup('International Tours', Array.isArray(ge)? ge: []);
+              }
+            }
+            if(tripTypeSel){
+              tripTypeSel.addEventListener('change', ()=> setOptions(tripTypeSel.value));
+              // initialize if already selected
+              setOptions(tripTypeSel.value);
+            }
+          })();
+        </script>
+        <script>
+          // Handle Plan Your Journey search -> render results into the existing grid
+          (function(){
+            const form = document.getElementById('contact-form220');
+            const tripType = document.getElementById('tripType');
+            const destination = document.getElementById('destination');
+            const slot = document.getElementById('pyj-dynamic-slot');
+
+            function get(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch{ return []; } }
+            function slugify(str){ return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+            function makeCard(item, isDomestic, idx){
+              const slug = slugify(item.title || '');
+              const href = isDomestic ? `tour-details.html?id=${encodeURIComponent(slug)}` : `destination-details.html?id=${encodeURIComponent(slug)}`;
+              const img = item.image || './assets/img/placeholder.jpg';
+              const days = item.days || '';
+              const people = item.people || '';
+              const price = item.price || '';
+              const anims = [
+                { cls:'fadeInLeft', delay:'.3s' },
+                { cls:'zoomIn', delay:'.5s' },
+                { cls:'fadeInRight', delay:'.7s' }
+              ];
+              const a = anims[idx % anims.length];
+              return `
+              <div class="col-xl-4 col-lg-6 col-md-6 wow ${a.cls}" data-wow-delay="${a.delay}" data-wow-duration="1.2s">
+                <div class="destination-card-items mt-0">
+                  <div class="destination-image">
+                    <a href="${href}"><img src="${img}" alt="${item.title||''}"></a>
+                    <div class="heart-icon"><i class="fa-regular fa-heart"></i></div>
+                  </div>
+                  <div class="destination-content">
+                    <ul class="meta">
+                      <li><i class="fa-thin fa-location-dot"></i>${item.title||''}</li>
+                      <li class="rating"><div class="star"><i class="fa-solid fa-star"></i></div><p>4.8</p></li>
+                    </ul>
+                    <h5><a href="${href}">${item.title||''}</a></h5>
+                    <ul class="info">
+                      <li><i class="fa-regular fa-clock"></i>${days}</li>
+                      <li><i class="fa-thin fa-users"></i>${people}</li>
+                    </ul>
+                    <div class="price">
+                      <h6>${price ? price : ''}${price ? '<span>/Per person</span>' : ''}</h6>
+                      <a href="${href}" class="theme-btn style-2">View Details<i class="fa-sharp fa-regular fa-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+            }
+
+            function computeAndRender(){
+              if(!slot) return;
+              const type = tripType?.value || '';
+              const dest = (destination?.value || '').trim().toLowerCase();
+              const listDomestic = get('gt_admin_ii');
+              const listInternational = get('gt_admin_ge');
+              let items = [];
+              if(type === 'domestic') items = Array.isArray(listDomestic)? listDomestic: [];
+              else if(type === 'international') items = Array.isArray(listInternational)? listInternational: [];
+              else items = [...(Array.isArray(listDomestic)? listDomestic: []), ...(Array.isArray(listInternational)? listInternational: [])];
+              if(dest){ items = items.filter(it=> ((it.title||'').toLowerCase() === dest) || ((it.title||'').toLowerCase().includes(dest))); }
+              const domesticTitles = new Set((Array.isArray(listDomestic)? listDomestic: []).map(x=> x.title||''));
+              slot.innerHTML = items.map((it, i)=> makeCard(it, type ? (type==='domestic') : domesticTitles.has(it.title||''), i)).join('');
+            }
+
+            if(form){ form.addEventListener('submit', function(e){ e.preventDefault(); computeAndRender(); }); }
+            if(tripType){ tripType.addEventListener('change', computeAndRender); }
+            if(destination){ destination.addEventListener('change', computeAndRender); }
+            computeAndRender();
+          })();
+        </script>
         <!--<< Wow Animation Js >>-->
         <script src="assets/js/wow.min.js"></script>
         <script>

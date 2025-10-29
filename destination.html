@@ -341,7 +341,7 @@
     </div>
 
     <div class="container">
-      <div class="row g-4">
+      <div class="row g-4" id="ge-cards-row">
         <!-- 1. Thailand -->
         <div class="col-xl-4 col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay=".2s">
           <div class="destination-card-items mt-0">
@@ -514,6 +514,81 @@
     </div>
   </div>
 </section>
+
+<script>
+  // Append admin-added Global Escapes items from localStorage onto the grid
+  (function(){
+    try{
+      const row = document.getElementById('ge-cards-row');
+      if(!row) return;
+      const data = JSON.parse(localStorage.getItem('gt_admin_ge')) || [];
+      if(!Array.isArray(data) || !data.length) return;
+
+      function slugify(str){
+        return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+      }
+
+      data.forEach((item, i) => {
+        const title = (item && item.title) ? item.title : 'New Destination';
+        const image = (item && item.image) ? item.image : './assets/img/3.jpg';
+        const location = title; // fallback use title as location label
+        const slug = slugify(title) || ('dest-'+i);
+        const days = (item && item.days) ? item.days : '5 Days';
+        const people = (item && item.people) ? item.people : '20+';
+        const price = (item && item.price) ? item.price : '₹55,000';
+
+        const col = document.createElement('div');
+        col.className = 'col-xl-4 col-lg-6 col-md-6 wow fadeInUp';
+        col.setAttribute('data-wow-delay', '.15s');
+        col.innerHTML = `
+          <div class="destination-card-items mt-0">
+            <div class="destination-image">
+              <a href="destination-details.html?id=${slug}">
+                <img src="${image}" alt="${title}">
+              </a>
+              <div class="heart-icon"><i class="fa-regular fa-heart"></i></div>
+            </div>
+            <div class="destination-content">
+              <ul class="meta">
+                <li><i class="fa-thin fa-location-dot"></i> ${location}</li>
+                <li class="rating"><div class="star"><i class="fa-solid fa-star"></i></div><p>4.8</p></li>
+              </ul>
+              <h5><a href="destination-details.html?id=${slug}">${title}</a></h5>
+              <ul class="info">
+                <li><i class="fa-regular fa-clock"></i> ${days}</li>
+                <li><i class="fa-thin fa-users"></i> ${people}</li>
+              </ul>
+              <div class="price">
+                <h6>${price}<span>/Per Person</span></h6>
+                <a href="destination-details.html?id=${slug}" class="theme-btn style-2">Book Now <i class="fa-sharp fa-regular fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>`;
+        row.appendChild(col);
+      });
+    } catch(e){ /* no-op */ }
+  })();
+
+  // Rewrite built-in cards to include slug param so details can be edited per trip
+  (function(){
+    function slugify(str){
+      return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    }
+    const cards = document.querySelectorAll('#ge-cards-row .destination-card-items');
+    cards.forEach(card => {
+      const titleEl = card.querySelector('h5 a');
+      const imgLink = card.querySelector('.destination-image a');
+      const title = titleEl ? titleEl.textContent.trim() : '';
+      const slug = slugify(title);
+      if (!slug) return;
+      const url = `destination-details.html?id=${slug}`;
+      if (titleEl) titleEl.setAttribute('href', url);
+      if (imgLink) imgLink.setAttribute('href', url);
+      const bookBtn = card.querySelector('.price a');
+      if (bookBtn) bookBtn.setAttribute('href', url);
+    });
+  })();
+</script>
 
        
     <!-- watch-video-section Start -->

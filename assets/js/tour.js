@@ -28,6 +28,9 @@
       }
 
       const container = document.getElementById("tour-cards");
+      if(!container){
+        return;
+      }
 
       if(location && tourData[location]){
         tourData[location].forEach(tour => {
