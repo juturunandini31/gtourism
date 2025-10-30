@@ -529,95 +529,97 @@
 </script>
 <script>
   // Region-aware renderer for Global Escapes
-  (function(){
-    try{
-      const params = new URLSearchParams(location.search);
-      const region = params.get('region');
-      if(!region) return; // default (Asia) markup remains
+  window.addEventListener('DOMContentLoaded', function(){
+    function applyRegion(){
+      try{
+        const params = new URLSearchParams(location.search);
+        let region = params.get('region');
+        if(!region) return; // default (Asia) markup remains
+        region = region.trim();
 
-      // Update section title
-      const titleEl = document.querySelector('.section-title h2');
-      if (titleEl) titleEl.textContent = `${region} – All Tour Packages`;
+        // Update section title
+        const titleEl = document.querySelector('.section-title h2');
+        if (titleEl) titleEl.textContent = `${region} – All Tour Packages`;
 
-      // For selected region, show stats and update heading + map
-      const statsWrap = document.querySelector('.stats-sections');
-      if (statsWrap) {
-        statsWrap.style.display = 'block';
-        const statsTitle = statsWrap.querySelector('h2');
-        if (statsTitle) statsTitle.textContent = `${region} – Visitors Statistics`;
-        const mapImg = statsWrap.querySelector('.stat-block.map-area img');
-        const mapSrc = {
-          Asia: 'https://img.freepik.com/premium-vector/asia-outline-world-map-vector_92497-298.jpg?w=740',
-          Europe: './assets/img/map-bg.png',
-          Australia: './assets/img/map-bg.png',
-          Russia: './assets/img/map-bg.png',
-          Africa: './assets/img/map-bg.png',
-          America: './assets/img/map-bg.png'
+        // For selected region, show stats and update heading + map
+        const statsWrap = document.querySelector('.stats-sections');
+        if (statsWrap) {
+          statsWrap.style.display = 'block';
+          const statsTitle = document.querySelector('.stats-sections > h2');
+          if (statsTitle) statsTitle.textContent = `${region} – Visitors Statistics`;
+          const mapImg = statsWrap.querySelector('.stat-block.map-area img');
+          const mapSrc = {
+            Asia: 'https://img.freepik.com/premium-vector/asia-outline-world-map-vector_92497-298.jpg?w=740',
+            Europe: './assets/img/map-bg.png',
+            Australia: './assets/img/map-bg.png',
+            Russia: './assets/img/map-bg.png',
+            Africa: './assets/img/map-bg.png',
+            America: './assets/img/map-bg.png'
+          };
+          if (mapImg) mapImg.src = mapSrc[region] || './assets/img/map-bg.png';
+        }
+
+        // Region datasets (6 tours each)
+        const tours = {
+          Europe: [
+            { loc: 'France', title: 'Paris & Versailles Highlights', days: '6 Days', people: '30+', price: '₹1,45,000', rating: '4.9', img: './assets/img/neweurope.png' },
+            { loc: 'Italy', title: 'Rome, Florence & Venice Classic', days: '8 Days', people: '25+', price: '₹1,65,000', rating: '5.0', img: './assets/img/1.jpg' },
+            { loc: 'Switzerland', title: 'Swiss Alps with Jungfraujoch', days: '7 Days', people: '20+', price: '₹1,85,000', rating: '4.8', img: './assets/img/2.jpg' },
+            { loc: 'Spain', title: 'Barcelona & Madrid Explorer', days: '6 Days', people: '35+', price: '₹1,39,000', rating: '4.7', img: './assets/img/4.jpg' },
+            { loc: 'Greece', title: 'Athens & Santorini Getaway', days: '6 Days', people: '20+', price: '₹1,49,000', rating: '4.9', img: './assets/img/neweurope.png' },
+            { loc: 'Netherlands', title: 'Amsterdam Canals & Windmills', days: '5 Days', people: '30+', price: '₹1,29,000', rating: '4.6', img: './assets/img/1.jpg' },
+          ],
+          Australia: [
+            { loc: 'Australia', title: 'Sydney City & Blue Mountains', days: '6 Days', people: '20+', price: '₹1,75,000', rating: '4.8', img: './assets/img/austrila1.jpg' },
+            { loc: 'Australia', title: 'Great Ocean Road Adventure', days: '5 Days', people: '18+', price: '₹1,55,000', rating: '4.7', img: './assets/img/1.jpg' },
+            { loc: 'Australia', title: 'Cairns & Great Barrier Reef', days: '6 Days', people: '22+', price: '₹1,89,000', rating: '4.9', img: './assets/img/2.jpg' },
+            { loc: 'Australia', title: 'Melbourne Culture & Penguins', days: '5 Days', people: '26+', price: '₹1,49,000', rating: '4.6', img: './assets/img/4.jpg' },
+            { loc: 'New Zealand', title: 'Auckland & Rotorua Essentials', days: '6 Days', people: '20+', price: '₹1,69,000', rating: '4.8', img: './assets/img/1.jpg' },
+            { loc: 'New Zealand', title: 'Queenstown Adventure Break', days: '5 Days', people: '16+', price: '₹1,59,000', rating: '4.7', img: './assets/img/2.jpg' },
+          ],
+          Russia: [
+            { loc: 'Russia', title: 'Moscow & Kremlin Heritage', days: '5 Days', people: '25+', price: '₹1,35,000', rating: '4.6', img: './assets/img/russia1.jpg' },
+            { loc: 'Russia', title: 'St. Petersburg Palaces Tour', days: '6 Days', people: '20+', price: '₹1,49,000', rating: '4.7', img: './assets/img/1.jpg' },
+            { loc: 'Russia', title: 'Golden Ring Countryside', days: '6 Days', people: '18+', price: '₹1,29,000', rating: '4.5', img: './assets/img/2.jpg' },
+            { loc: 'Russia', title: 'Winter Aurora Hunt (Murmansk)', days: '5 Days', people: '15+', price: '₹1,69,000', rating: '4.8', img: './assets/img/4.jpg' },
+            { loc: 'Russia', title: 'Trans-Siberian Highlights', days: '7 Days', people: '12+', price: '₹1,95,000', rating: '4.7', img: './assets/img/russia1.jpg' },
+            { loc: 'Russia', title: 'Kazan & Volga Discovery', days: '5 Days', people: '20+', price: '₹1,25,000', rating: '4.6', img: './assets/img/1.jpg' },
+          ],
+          Africa: [
+            { loc: 'Kenya', title: 'Masai Mara Safari Experience', days: '6 Days', people: '18+', price: '₹1,75,000', rating: '4.9', img: './assets/img/africa1.jpg' },
+            { loc: 'South Africa', title: 'Cape Town & Garden Route', days: '7 Days', people: '20+', price: '₹1,69,000', rating: '4.8', img: './assets/img/1.jpg' },
+            { loc: 'Tanzania', title: 'Serengeti & Ngorongoro Drive', days: '7 Days', people: '16+', price: '₹1,89,000', rating: '4.8', img: './assets/img/2.jpg' },
+            { loc: 'Egypt', title: 'Cairo Pyramids & Nile Cruise', days: '6 Days', people: '30+', price: '₹1,49,000', rating: '4.7', img: './assets/img/4.jpg' },
+            { loc: 'Morocco', title: 'Marrakech & Sahara Dunes', days: '6 Days', people: '22+', price: '₹1,39,000', rating: '4.6', img: './assets/img/africa1.jpg' },
+            { loc: 'Zanzibar', title: 'Stone Town & Beach Escape', days: '5 Days', people: '20+', price: '₹1,29,000', rating: '4.6', img: './assets/img/1.jpg' },
+          ],
+          America: [
+            { loc: 'USA', title: 'New York, DC & Niagara Circuit', days: '7 Days', people: '30+', price: '₹2,25,000', rating: '4.8', img: './assets/img/newamerica.png' },
+            { loc: 'USA', title: 'West Coast: LA, SF & Vegas', days: '8 Days', people: '25+', price: '₹2,45,000', rating: '4.9', img: './assets/img/1.jpg' },
+            { loc: 'Canada', title: 'Vancouver & Banff Rockies', days: '6 Days', people: '20+', price: '₹2,05,000', rating: '4.7', img: './assets/img/2.jpg' },
+            { loc: 'Mexico', title: 'Cancun Beaches & Chichen Itza', days: '6 Days', people: '22+', price: '₹1,85,000', rating: '4.6', img: './assets/img/4.jpg' },
+            { loc: 'Peru', title: 'Machu Picchu & Sacred Valley', days: '7 Days', people: '18+', price: '₹1,99,000', rating: '4.8', img: './assets/img/newamerica.png' },
+            { loc: 'Brazil', title: 'Rio de Janeiro & Iguazu Falls', days: '7 Days', people: '24+', price: '₹1,95,000', rating: '4.7', img: './assets/img/1.jpg' },
+          ]
         };
-        if (mapImg) mapImg.src = mapSrc[region] || './assets/img/map-bg.png';
-      }
 
-      // Region datasets (6 tours each)
-      const tours = {
-        Europe: [
-          { loc: 'France', title: 'Paris & Versailles Highlights', days: '6 Days', people: '30+', price: '₹1,45,000', rating: '4.9', img: './assets/img/neweurope.png' },
-          { loc: 'Italy', title: 'Rome, Florence & Venice Classic', days: '8 Days', people: '25+', price: '₹1,65,000', rating: '5.0', img: './assets/img/1.jpg' },
-          { loc: 'Switzerland', title: 'Swiss Alps with Jungfraujoch', days: '7 Days', people: '20+', price: '₹1,85,000', rating: '4.8', img: './assets/img/2.jpg' },
-          { loc: 'Spain', title: 'Barcelona & Madrid Explorer', days: '6 Days', people: '35+', price: '₹1,39,000', rating: '4.7', img: './assets/img/4.jpg' },
-          { loc: 'Greece', title: 'Athens & Santorini Getaway', days: '6 Days', people: '20+', price: '₹1,49,000', rating: '4.9', img: './assets/img/neweurope.png' },
-          { loc: 'Netherlands', title: 'Amsterdam Canals & Windmills', days: '5 Days', people: '30+', price: '₹1,29,000', rating: '4.6', img: './assets/img/1.jpg' },
-        ],
-        Australia: [
-          { loc: 'Australia', title: 'Sydney City & Blue Mountains', days: '6 Days', people: '20+', price: '₹1,75,000', rating: '4.8', img: './assets/img/austrila1.jpg' },
-          { loc: 'Australia', title: 'Great Ocean Road Adventure', days: '5 Days', people: '18+', price: '₹1,55,000', rating: '4.7', img: './assets/img/1.jpg' },
-          { loc: 'Australia', title: 'Cairns & Great Barrier Reef', days: '6 Days', people: '22+', price: '₹1,89,000', rating: '4.9', img: './assets/img/2.jpg' },
-          { loc: 'Australia', title: 'Melbourne Culture & Penguins', days: '5 Days', people: '26+', price: '₹1,49,000', rating: '4.6', img: './assets/img/4.jpg' },
-          { loc: 'New Zealand', title: 'Auckland & Rotorua Essentials', days: '6 Days', people: '20+', price: '₹1,69,000', rating: '4.8', img: './assets/img/1.jpg' },
-          { loc: 'New Zealand', title: 'Queenstown Adventure Break', days: '5 Days', people: '16+', price: '₹1,59,000', rating: '4.7', img: './assets/img/2.jpg' },
-        ],
-        Russia: [
-          { loc: 'Russia', title: 'Moscow & Kremlin Heritage', days: '5 Days', people: '25+', price: '₹1,35,000', rating: '4.6', img: './assets/img/russia1.jpg' },
-          { loc: 'Russia', title: 'St. Petersburg Palaces Tour', days: '6 Days', people: '20+', price: '₹1,49,000', rating: '4.7', img: './assets/img/1.jpg' },
-          { loc: 'Russia', title: 'Golden Ring Countryside', days: '6 Days', people: '18+', price: '₹1,29,000', rating: '4.5', img: './assets/img/2.jpg' },
-          { loc: 'Russia', title: 'Winter Aurora Hunt (Murmansk)', days: '5 Days', people: '15+', price: '₹1,69,000', rating: '4.8', img: './assets/img/4.jpg' },
-          { loc: 'Russia', title: 'Trans-Siberian Highlights', days: '7 Days', people: '12+', price: '₹1,95,000', rating: '4.7', img: './assets/img/russia1.jpg' },
-          { loc: 'Russia', title: 'Kazan & Volga Discovery', days: '5 Days', people: '20+', price: '₹1,25,000', rating: '4.6', img: './assets/img/1.jpg' },
-        ],
-        Africa: [
-          { loc: 'Kenya', title: 'Masai Mara Safari Experience', days: '6 Days', people: '18+', price: '₹1,75,000', rating: '4.9', img: './assets/img/africa1.jpg' },
-          { loc: 'South Africa', title: 'Cape Town & Garden Route', days: '7 Days', people: '20+', price: '₹1,69,000', rating: '4.8', img: './assets/img/1.jpg' },
-          { loc: 'Tanzania', title: 'Serengeti & Ngorongoro Drive', days: '7 Days', people: '16+', price: '₹1,89,000', rating: '4.8', img: './assets/img/2.jpg' },
-          { loc: 'Egypt', title: 'Cairo Pyramids & Nile Cruise', days: '6 Days', people: '30+', price: '₹1,49,000', rating: '4.7', img: './assets/img/4.jpg' },
-          { loc: 'Morocco', title: 'Marrakech & Sahara Dunes', days: '6 Days', people: '22+', price: '₹1,39,000', rating: '4.6', img: './assets/img/africa1.jpg' },
-          { loc: 'Zanzibar', title: 'Stone Town & Beach Escape', days: '5 Days', people: '20+', price: '₹1,29,000', rating: '4.6', img: './assets/img/1.jpg' },
-        ],
-        America: [
-          { loc: 'USA', title: 'New York, DC & Niagara Circuit', days: '7 Days', people: '30+', price: '₹2,25,000', rating: '4.8', img: './assets/img/newamerica.png' },
-          { loc: 'USA', title: 'West Coast: LA, SF & Vegas', days: '8 Days', people: '25+', price: '₹2,45,000', rating: '4.9', img: './assets/img/1.jpg' },
-          { loc: 'Canada', title: 'Vancouver & Banff Rockies', days: '6 Days', people: '20+', price: '₹2,05,000', rating: '4.7', img: './assets/img/2.jpg' },
-          { loc: 'Mexico', title: 'Cancun Beaches & Chichen Itza', days: '6 Days', people: '22+', price: '₹1,85,000', rating: '4.6', img: './assets/img/4.jpg' },
-          { loc: 'Peru', title: 'Machu Picchu & Sacred Valley', days: '7 Days', people: '18+', price: '₹1,99,000', rating: '4.8', img: './assets/img/newamerica.png' },
-          { loc: 'Brazil', title: 'Rio de Janeiro & Iguazu Falls', days: '7 Days', people: '24+', price: '₹1,95,000', rating: '4.7', img: './assets/img/1.jpg' },
-        ]
-      };
+        const list = tours[region];
+        if(!list) return;
 
-      const list = tours[region];
-      if(!list) return;
+        const row = document.getElementById('ge-cards-row');
+        if(!row) return;
+        row.innerHTML = '';
 
-      const row = document.getElementById('ge-cards-row');
-      if(!row) return;
-      row.innerHTML = '';
+        function slugify(str){
+          return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+        }
 
-      function slugify(str){
-        return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-      }
-
-      list.forEach(item => {
-        const slug = slugify(item.title);
-        const col = document.createElement('div');
-        col.className = 'col-xl-4 col-lg-6 col-md-6 wow fadeInUp';
-        col.setAttribute('data-wow-delay', '.15s');
-        col.innerHTML = `
+        list.forEach(item => {
+          const slug = slugify(item.title);
+          const col = document.createElement('div');
+          col.className = 'col-xl-4 col-lg-6 col-md-6 wow fadeInUp';
+          col.setAttribute('data-wow-delay', '.15s');
+          col.innerHTML = `
           <div class="destination-card-items mt-0">
             <div class="destination-image">
               <a href="destination-details.html?id=${slug}">
@@ -642,14 +644,19 @@
             </div>
           </div>`;
         row.appendChild(col);
-      });
-      // If Swiper is already initialized, update after DOM mutations
-      if (window.instagramSwiper) {
-        setTimeout(function(){
-          try{ window.instagramSwiper.update(); window.instagramSwiper.slideToLoop(0, 0); }catch(_e){}
-        }, 50);
-      }
-    } catch(e){ /* no-op */ }
+        });
+        // If Swiper is already initialized, update after DOM mutations
+        if (window.instagramSwiper) {
+          setTimeout(function(){
+            try{ window.instagramSwiper.update(); window.instagramSwiper.slideToLoop(0, 0); }catch(_e){}
+          }, 50);
+        }
+      } catch(e){ /* no-op */ }
+    }
+    // Apply immediately, then re-apply after short delays to avoid late overwrites
+    applyRegion();
+    setTimeout(applyRegion, 150);
+    window.addEventListener('load', applyRegion);
   });
 </script>
 
@@ -703,12 +710,25 @@
         slide.className = 'swiper-slide';
         slide.innerHTML = `
           <div class="instagram-banner-items">
-            <div class="banner-image">
-              <img src="${s.img}" alt="${s.cap}" loading="lazy" onerror="this.onerror=null;this.src='./assets/img/3.jpg';">
-            </div>
+            <div class="banner-image bg-cover"></div>
             <div class="caption">${s.cap}</div>
           </div>`;
         wrap.appendChild(slide);
+
+        // Preload image and set as background to avoid hotlink/CORS issues on file://
+        try{
+          const imgDiv = slide.querySelector('.banner-image');
+          const probe = new Image();
+          probe.onload = function(){
+            imgDiv.style.backgroundImage = `url('${s.img}')`;
+          };
+          probe.onerror = function(){
+            imgDiv.style.backgroundImage = "url('./assets/img/3.jpg')";
+          };
+          probe.referrerPolicy = 'no-referrer';
+          probe.crossOrigin = 'anonymous';
+          probe.src = s.img;
+        }catch(_e){}
       });
       // Refresh swiper after rebuilding slides
       if (window.instagramSwiper) {
