@@ -672,6 +672,7 @@
       <!-- Inclusions -->
       <div class="tab-pane fade show active" id="inclusions" role="tabpanel">
         <h5>PACKAGE INCLUSIONS:</h5>
+        <div id="td-inc">
         <ul class="custom-list">
           <li>3 Stars Accommodation on Two sharing basis.</li>
           <li>02 Nights Accommodation in Thekkady</li>
@@ -680,46 +681,38 @@
           <li>Coach transfers, entrance fees, excursions, sightseeing and surface transportation as mentioned in the itinerary.</li>
           <li>Sightseeing and transfers by private coach as per the itinerary.</li>
         </ul>
+        </div>
       </div>
 
       <!-- Exclusions -->
       <div class="tab-pane fade" id="exclusions" role="tabpanel">
         <h5>PACKAGE EXCLUSIONS:</h5>
+        <div id="td-exc">
         <ul class="custom-list">
           <li>Overland Journey Which Is Not Mentioned In The Itinerary.</li>
-          <li>Personal expenses such as passport, visas, room service, phone calls, laundry, beverages and optional activities.</li>
-          <li>Jeep Safari, Boating and Trekking Entry fees is not mentioned in the itinerary.</li>
-          <li>Any Personal Nature Items Like Laundry, Bar Bills, Table Bills, Camera Fee, Tips Or Any Other Item.</li>
-          <li>Early check-in and late check out.</li>
-          <li>Any meals which is not mentioned in the itinerary.</li>
-          <li>Any expenses which are of personal in nature.</li>
-          <li>GST applicable.</li>
-          <li>Any services which are not mentioned in the above “Package Inclusions”.</li>
-          <li>The above rate is quoted on basis of minimum 16 full paying adults travelling together.</li>
-          <li>The hotels and services as mentioned in the itinerary are subject to confirmation.</li>
-          <li>We are not holding any confirmed reservation for both air & land arrangements for till the 75% advance payment.</li>
-          <li>Rates may change in case of change in hotel rates, transport rates, government taxes or entrance fees.</li>
-          <li>The hotels mentioned in the packages are subject to confirmation or similar category of hotel will be provided.</li>
-          <li>Surcharges if applicable due to High season, Festival or Trade fairs.</li>
-          <li>Rates are subject to change in case of any changes in Airfare, Airport taxes, hotel rates, transport rates, government taxes or entrance fees.</li>
+          <li>Any Other Items Not Mentioned In The Inclusions.</li>
+          <li>Any Other Food / Drinks Other Than Specified.</li>
+          <li>Tips, Laundry, Personal Expenses.</li>
         </ul>
+        </div>
       </div>
 
       <!-- General Info -->
       <div class="tab-pane fade" id="info" role="tabpanel">
         <h5>GENERAL INFORMATION:</h5>
+        <div id="td-info">
         <ul class="custom-list">
-          <li>Reach airport prior to 3 hours of your departure due to security reasons/checking.</li>
-          <li>If any additional cost asked by driver during the tour please coordinate to your local tour representative before giving any cash.</li>
-          <li>It is always advisable to follow the timings provided by your tour coordinator/Driver to experience hassle free travel.</li>
-          <li>Follow the hotel timings for your breakfast & Dinner, we shall not be responsible.</li>
-          <li>Always carry your Travel documents / Hotel Confirmation / Driving License / Passport / Aadhar Card for smooth check in at Hotel.</li>
+          <li>Hotel Check in time 14:00 hrs and check out time 12 Noon.</li>
+          <li>Any damages caused to any of the hotel rooms by the guest is to be borne by the guest.</li>
+          <li>Company will not take any responsibility in case of any natural calamity.</li>
         </ul>
+        </div>
       </div>
 
       <!-- Cancellation -->
       <div class="tab-pane fade" id="cancel" role="tabpanel">
         <h5>TOUR CANCELLATION POLICY:</h5>
+        <div id="td-cancel">
         <ul class="custom-list">
           <li>Full payment needs to be done in advance before tour starts.</li>
           <li>100% processing charges if cancelled below 10 days before tour starts.</li>
@@ -727,28 +720,29 @@
           <li>50% Cancellation charges if more than 30 days before tour starts.</li>
           <li>Air ticket cancellation will be applicable for package.</li>
         </ul>
+        </div>
       </div>
 
        <!-- TOUR QUOTE -->
   <div class="tab-pane fade" id="quote" role="tabpanel">
     <h5>TOUR QUOTE:</h5>
+    <div id="td-quote">
     <ul class="custom-list">
       <li>The price mentioned above is valid for 4 passengers (minimum) traveling together.</li>
-      <li>Any sudden increase in hotel, transport, or tax rates will be informed and charged extra.</li>
-      <li>The cost is based on four-sharing room accommodation.</li>
-      <li>Please confirm early to proceed with air ticket booking (minimum 30 days prior).</li>
+      <li>The price is subject to change as per hotel availability and rise in fuel prices.</li>
     </ul>
+    </div>
   </div>
 
   <!-- KINDLY NOTE -->
   <div class="tab-pane fade" id="note" role="tabpanel">
     <h5>KINDLY NOTE:</h5>
+    <div id="td-note">
     <ul class="custom-list">
       <li>Company is not responsible for missed Bus/Train/Flight, baggage, or personal belongings.</li>
-      <li>Rates are subject to change without prior notice based on availability and tax revisions.</li>
-      <li>Any delay or time change in transport will be informed but is beyond company control.</li>
-      <li>Company is not liable for any personal injury or mishap during the trip.</li>
+      <li>If any point not covered due to weather/strike/traffic, there will be no refund.</li>
     </ul>
+    </div>
   </div>
     </div>
                 </div>
@@ -911,7 +905,6 @@
         <!--<< Main.js >>-->
         <script src="assets/js/main.js"></script>
         <script src="assets/js/tour.js"></script>
-        <script src="assets/js/slide.js"></script>
         <script>
           // Load overrides for tour details
           (function(){
@@ -919,6 +912,12 @@
             const imgEl = document.getElementById('td-image');
             const d1El = document.getElementById('td-desc1');
             const d2El = document.getElementById('td-desc2');
+            const incEl = document.getElementById('td-inc');
+            const excEl = document.getElementById('td-exc');
+            const infoEl = document.getElementById('td-info');
+            const cancelEl = document.getElementById('td-cancel');
+            const quoteEl = document.getElementById('td-quote');
+            const noteEl = document.getElementById('td-note');
 
             function slugify(str){
               return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
@@ -934,6 +933,12 @@
                 if (saved.image && imgEl) imgEl.src = saved.image;
                 if (saved.desc1 && d1El) d1El.textContent = saved.desc1;
                 if (saved.desc2 && d2El) d2El.textContent = saved.desc2;
+                if (saved.inclusions && incEl) incEl.innerHTML = saved.inclusions;
+                if (saved.exclusions && excEl) excEl.innerHTML = saved.exclusions;
+                if (saved.info && infoEl) infoEl.innerHTML = saved.info;
+                if (saved.cancel && cancelEl) cancelEl.innerHTML = saved.cancel;
+                if (saved.quote && quoteEl) quoteEl.innerHTML = saved.quote;
+                if (saved.note && noteEl) noteEl.innerHTML = saved.note;
               }
             }catch(e){}
           })();

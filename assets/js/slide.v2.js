@@ -51,6 +51,6 @@ document.addEventListener('DOMContentLoaded', function(){
       `);
     });
   } catch (e) {
-    console.error('slide.js runtime error:', e);
+    console.error('slide.v2.js runtime error:', e);
   }
 });

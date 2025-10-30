@@ -774,7 +774,154 @@
         <!--<< Main.js >>-->
         <script src="assets/js/main.js"></script>
         <script src="assets/js/tour.js"></script>
-        <script src="assets/js/slide.js"></script>
+        <script>
+          // Default view (no location): hide stats
+          (function(){
+            const params = new URLSearchParams(location.search);
+            if (!params.get('location')) {
+              const statsWrap = document.querySelector('.stats-sections');
+              if (statsWrap) statsWrap.style.display = 'none';
+            }
+          })();
+
+          // Location-aware renderer for Incredible India
+          (function(){
+            try{
+              const params = new URLSearchParams(location.search);
+              let locationName = params.get('location');
+              if(!locationName) return; // keep defaults
+              // Normalize casing
+              locationName = locationName.trim().split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+
+              // Update stats block title + map
+              const statsWrap = document.querySelector('.stats-sections');
+              if (statsWrap) {
+                statsWrap.style.display = 'block';
+                const h2 = statsWrap.querySelector('h2');
+                if (h2) h2.textContent = `${locationName} – Visitors Statistics`;
+                const mapImg = statsWrap.querySelector('.stat-block.map-area img');
+                const mapSrc = {
+                  'Kerala': 'https://static.vecteezy.com/system/resources/previews/059/950/905/non_2x/gray-map-of-the-kerala-state-of-india-free-vector.jpg',
+                  'Tamil Nadu': 'https://upload.wikimedia.org/wikipedia/commons/0/04/Tamil_Nadu_districts_map.svg',
+                  'Karnataka': 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Karnataka_map.svg'
+                };
+                if (mapImg) mapImg.src = mapSrc[locationName] || mapImg.src;
+              }
+
+              // Cards dataset per location
+              const cards = {
+                'Kerala': [
+                  { title:'Munnar / Thekkady', img:'./assets/img/thekkady.jpg', rating:'4.8', days:'4 Nights 5 Days', people:'20+', price:'$399.00' },
+                  { title:'Alleppey / Kumarakom', img:'./assets/img/Alleppey-vs-Kumarakom.jpg', rating:'4.7', days:'3 Nights 4 Days', people:'15+', price:'$349.00' },
+                  { title:'Kochi / Fort Kochi', img:'./assets/img/kochi.webp', rating:'4.6', days:'2 Nights 3 Days', people:'10+', price:'$299.00' },
+                  { title:'Wayanad / Meenmutty Falls', img:'./assets/img/meenmutty.jpg', rating:'4.8', days:'3 Nights 4 Days', people:'15+', price:'$359.00' },
+                  { title:'Kovalam / Varkala', img:'./assets/img/Kovalam-vs-Varkala.jpg', rating:'4.7', days:'3 Nights 4 Days', people:'15+', price:'$369.00' },
+                  { title:'Thekkady / Periyar', img:'./assets/img/boating-thekkady.jpg', rating:'4.8', days:'4 Nights 5 Days', people:'20+', price:'$399.00' }
+                ],
+                'Tamil Nadu': [
+                  { title:'Ooty / Kodaikanal', img:'https://traveleasystorage.s3.eu-north-1.amazonaws.com/Districts/Nilgiri.jpg', rating:'4.6', days:'3 Nights 4 Days', people:'15+', price:'$399.00' },
+                  { title:'Mahabalipuram / Pondicherry', img:'https://travelogyindia.b-cdn.net/storage/app/itinerary/467/mahabalipuram-temple.jpg', rating:'4.5', days:'2 Nights 3 Days', people:'10+', price:'$299.00' }
+                ],
+                'Karnataka': [
+                  { title:'Coorg / Bangalore', img:'https://oneday.travel/wp-content/uploads/up-tours-1-day-coorg-with-talacauvery-local-sightseeing-tour-package-private-car-header.jpg', rating:'4.7', days:'3 Nights 4 Days', people:'15+', price:'$399.00' },
+                  { title:'Mysore / Kabini', img:'https://www.sotc.in/blog/wp-content/uploads/2024/07/Mysore-Palace.jpg', rating:'4.6', days:'2 Nights 3 Days', people:'10+', price:'$299.00' }
+                ]
+              };
+
+              const list = cards[locationName];
+              if(list && list.length){
+                const row = document.getElementById('ii-cards-row');
+                if(row){
+                  row.innerHTML = '';
+                  function slugify(str){ return (str||'').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+                  list.forEach(item => {
+                    const slug = slugify(item.title);
+                    const col = document.createElement('div');
+                    col.className = 'col-xl-4 col-lg-6 col-md-6 wow fadeInUp';
+                    col.setAttribute('data-wow-delay', '.15s');
+                    col.innerHTML = `
+                      <div class="destination-card-items mt-0">
+                        <div class="destination-image">
+                          <a href="tour-details.html?id=${slug}">
+                            <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='./assets/img/3.jpg';">
+                          </a>
+                          <div class="heart-icon"><i class="fa-regular fa-heart"></i></div>
+                        </div>
+                        <div class="destination-content">
+                          <ul class="meta">
+                            <li><i class="fa-thin fa-location-dot"></i>${locationName}</li>
+                            <li class="rating"><div class="star"><i class="fa-solid fa-star"></i></div><p>${item.rating}</p></li>
+                          </ul>
+                          <h5><a href="tour-details.html?id=${slug}">${item.title}</a></h5>
+                          <ul class="info">
+                            <li><i class="fa-regular fa-clock"></i> ${item.days}</li>
+                            <li><i class="fa-thin fa-users"></i> ${item.people}</li>
+                          </ul>
+                          <div class="price">
+                            <h6>${item.price}<span>/Per person</span></h6>
+                            <a href="tour-details.html?id=${slug}" class="theme-btn style-2">Book Now<i class="fa-sharp fa-regular fa-arrow-right"></i></a>
+                          </div>
+                        </div>
+                      </div>`;
+                    row.appendChild(col);
+                  });
+                }
+              }
+
+              // Dynamic Top Attractions heading and slides
+              const heading = document.querySelector('.instagram-wrapper h2');
+              if(heading) heading.textContent = `${locationName} Top Attractions`;
+              const wrap = document.querySelector('.instagram-banner-slider .swiper-wrapper');
+              if(wrap){
+                const slides = {
+                  'Kerala': [
+                    {img:'./assets/img/Alleppey-vs-Kumarakom.jpg', cap:'Alleppey Backwaters'},
+                    {img:'./assets/img/boating-thekkady.jpg', cap:'Thekkady Boating'},
+                    {img:'./assets/img/Kovalam-vs-Varkala.jpg', cap:'Kovalam Beach'}
+                  ],
+                  'Tamil Nadu': [
+                    {img:'./assets/img/Tiruvannamalai.jpg', cap:'Arunachaleswarar Temple'},
+                    {img:'./assets/img/YERCAUD.webp', cap:'Yercaud Hills'},
+                    {img:'./assets/img/abouttour.png', cap:'Tamil Nadu Coast'}
+                  ],
+                  'Karnataka': [
+                    {img:'./assets/img/Mysore-Palace.jpg', cap:'Mysore Palace'},
+                    {img:'./assets/img/Murudeshwar.jpg', cap:'Murudeshwar'},
+                    {img:'./assets/img/ball.jpg', cap:'Karnataka Fort'}
+                  ]
+                };
+                const list2 = slides[locationName] || [];
+                if(list2.length){
+                  wrap.innerHTML = '';
+                  list2.forEach(s=>{
+                    const slide = document.createElement('div');
+                    slide.className = 'swiper-slide';
+                    slide.innerHTML = `
+                      <div class="instagram-banner-items">
+                        <div class="banner-image">
+                          <img src="${s.img}" alt="${s.cap}" loading="lazy" onerror="this.onerror=null;this.src='./assets/img/3.jpg';">
+                        </div>
+                        <div class="caption">${s.cap}</div>
+                      </div>`;
+                    wrap.appendChild(slide);
+                  });
+                  if (window.instagramSwiper) {
+                    try{
+                      const s = window.instagramSwiper;
+                      if (s.params.loop) { try{ s.loopDestroy(); }catch(_){} }
+                      s.updateSlides();
+                      s.updateProgress();
+                      s.updateSlidesClasses();
+                      if (s.params.loop) { try{ s.loopCreate(); }catch(_){} }
+                      s.update();
+                      s.slideToLoop(0,0);
+                    }catch(_e){}
+                  }
+                }
+              }
+            }catch(_e){}
+          })();
+        </script>
         <script>
           // Append admin-added Incredible India items from localStorage onto the grid
           (function(){

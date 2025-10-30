@@ -520,6 +520,38 @@
 
                   <hr>
                   <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">Travel Package Details</h6>
+                    <small class="text-muted">These map to the tabs on the Tour Details page</small>
+                  </div>
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <label class="form-label small">Package Inclusions (HTML or text)</label>
+                      <textarea id="iii-inc" rows="5" class="form-control" placeholder="<ul><li>...</li></ul>"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Package Exclusions (HTML or text)</label>
+                      <textarea id="iii-exc" rows="5" class="form-control" placeholder="<ul><li>...</li></ul>"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">General Information (HTML or text)</label>
+                      <textarea id="iii-info" rows="5" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Cancellation Policy (HTML or text)</label>
+                      <textarea id="iii-cancel" rows="5" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Tour Quote (HTML or text)</label>
+                      <textarea id="iii-quote" rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small">Kindly Note (HTML or text)</label>
+                      <textarea id="iii-note" rows="4" class="form-control"></textarea>
+                    </div>
+                  </div>
+
+                  <hr>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="mb-0">Facts</h6>
                     <small class="text-muted">Admin fills only values. Names & icons are fixed.</small>
                   </div>
@@ -1475,6 +1507,12 @@ G-Tourism Team
         desc2: (geiDesc2?.value||'').trim(),
         facts: geiFacts,
         tourPlan: geiTour,
+        inclusions: (geiInc?.value || '').trim(),
+        exclusions: (geiExc?.value || '').trim(),
+        info: (geiInfo?.value || '').trim(),
+        cancel: (geiCancelPolicy?.value || '').trim(),
+        quote: (geiQuote?.value || '').trim(),
+        note: (geiNote?.value || '').trim(),
       };
       try{ localStorage.setItem(geiKey(geiSlug), JSON.stringify(payload)); }catch(e){ alert('Save failed. Try smaller image or URL.'); return; }
       let arr=[]; try{ arr=JSON.parse(localStorage.getItem('gt_dd_index')||'[]'); }catch{}
@@ -1824,6 +1862,19 @@ G-Tourism Team
       showIIPreview(imageEl.value||'');
       if(d1El) d1El.value = saved.desc1 || '';
       if(d2El) d2El.value = saved.desc2 || '';
+      // Package tabs
+      const incEl = document.getElementById('iii-inc');
+      const excEl = document.getElementById('iii-exc');
+      const infoEl = document.getElementById('iii-info');
+      const cancelEl = document.getElementById('iii-cancel');
+      const quoteEl = document.getElementById('iii-quote');
+      const noteEl = document.getElementById('iii-note');
+      if(incEl) incEl.value = saved.inclusions || '';
+      if(excEl) excEl.value = saved.exclusions || '';
+      if(infoEl) infoEl.value = saved.info || '';
+      if(cancelEl) cancelEl.value = saved.cancel || '';
+      if(quoteEl) quoteEl.value = saved.quote || '';
+      if(noteEl) noteEl.value = saved.note || '';
       // Fixed facts mapping for Incredible India
       const defs = [
         { id:'ii-fv-accommodation', label:'Accommodation', iconUrl:'../assets/img/icon/27.svg' },

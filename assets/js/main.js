@@ -152,7 +152,9 @@ window.addEventListener("load", function() {
       });
   
       //>> Wow Animation Start <<//
-      new WOW().init();
+      if (typeof WOW !== 'undefined') {
+        new WOW().init();
+      }
   
        //>> Nice Select Start <<//
        if ($('.single-select').length) {
@@ -516,7 +518,7 @@ const breadcrumbswiper = new Swiper('.breadcrumb-swiper', {
 
     //>> Instagram Slider Start <<//
     if($('.instagram-banner-slider').length > 0) {
-        const instagramBannerSlider = new Swiper(".instagram-banner-slider", {
+        window.instagramSwiper = new Swiper(".instagram-banner-slider", {
             spaceBetween: 30,
             speed: 1500,
             loop: true,
